@@ -9,12 +9,7 @@ type Function interface {
 	Init(map[string]float64)
 
 	// Execute return res of input x by function
-	Execute(x int64) float64
-}
-
-// ResetAble mean the function can be reset,(some function need quick cal, need store some result, invoke it to clear)
-type ResetAble interface {
-	Reset()
+	Execute(x float64) float64
 }
 
 const (
@@ -39,6 +34,6 @@ func (z ZeroFunction) Init(m map[string]float64) {
 	// do nothing
 }
 
-func (z ZeroFunction) Execute(x int64) float64 {
+func (z ZeroFunction) Execute(x float64) float64 {
 	return 0
 }

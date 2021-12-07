@@ -1,0 +1,18 @@
+groups:
+  - name: test
+    tags:
+      tag1: test
+    groups:
+      - name: test3
+    workers:
+      - name: test-worker
+        functionName: DefaultLinearFunction
+        clientsName:
+          - StdoutClient
+  - name: test2
+    tags:
+      v1: v2
+clients:
+  - name: StdoutClient
+    params:
+      STDOUT_FILE: STDOUT_FILE

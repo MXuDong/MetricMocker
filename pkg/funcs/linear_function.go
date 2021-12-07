@@ -8,7 +8,7 @@ type LinearFunction struct {
 	offsetY float64
 }
 
-func (l *LinearFunction) Execute(x int64) float64 {
+func (l *LinearFunction) Execute(x float64) float64 {
 	return l.slope*(float64(x)+l.offsetX) + l.offsetY
 }
 
