@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mockers
+  labels:
+    istio-injection: enabled
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: metric-mocker
+  namespace: mockers
+  labels:
+    app: metric-mocker
+    version: v1beta
+spec:
+  ports:
+    - port: 8080
+      name: http-prom-port
+  selector:
+    app: metric-mocker
+    version: v1beta
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metric-mocker
+  namespace: mockers
+  labels:
+    app: metric-mocker
+    version: v1beta
+spec:
+  selector:
+    matchLabels:
+      app: metric-mocker
+      version: v1beta
+  template:
+    metadata:
+      namespace: mockers
+      labels:
+        app: metric-mocker
+        version: v1beta
+    spec:
+      containers:
+        - name: metric-mocker
+          image: mxudong/metric-mocker:betav1
+          ports:
+            - containerPort: 8080
+              name: http-prom-port
