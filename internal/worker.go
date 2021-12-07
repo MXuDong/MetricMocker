@@ -4,6 +4,7 @@ import (
 	"mmocker/pkg/clients"
 	"mmocker/pkg/funcs"
 	"mmocker/utils"
+	"mmocker/utils/log"
 	"time"
 )
 
@@ -28,6 +29,7 @@ func (g *Group) Do() {
 }
 
 func (g *Group) Load() {
+	log.Logger.Infof("Load the group: %s ", g.Name)
 	for _, groupItem := range g.Groups {
 		groupItem.Load()
 	}
@@ -39,6 +41,7 @@ func (g *Group) Load() {
 
 // PushTag will push all tag to children group and workers
 func (g *Group) PushTag() {
+	log.Logger.Infof("Push tag from %s : %v", g.Name, g.Tags)
 	for k, v := range g.Tags {
 		g.PutTag(k, v)
 	}
@@ -89,7 +92,7 @@ func (w *Worker) DoFunc(duration int64) func() {
 		for {
 			for _, clientItem := range w.Clients {
 				if clientItem != nil {
-					(clientItem).PutValue(w.Value(), tags)
+					(clientItem).PutValue(w.Name, w.Value(), tags)
 				}
 			}
 			<-timeTickerChan
@@ -99,9 +102,10 @@ func (w *Worker) DoFunc(duration int64) func() {
 
 // Load will load function and clients
 func (w *Worker) Load() {
+	log.Logger.Infof("Load the worker: %s with func: %s and clients: %v", w.Name, w.FunctionName, w.ClientsName)
 	w.f = utils.GetFunc(w.FunctionName, w.FunctionParams)
 	for _, workerItem := range w.ClientsName {
-		c, _ := utils.GetClient(workerItem, map[string]interface{}{})
+		c, _ := utils.GetClient(workerItem, "", map[string]interface{}{})
 		w.Clients = append(w.Clients, c)
 	}
 }

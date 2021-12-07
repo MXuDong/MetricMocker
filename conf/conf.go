@@ -9,5 +9,6 @@ type Configs struct {
 
 type Client struct {
 	Name   string                 `yaml:"name" json:"name"`
+	Type   string                 `yaml:"type" json:"type"`
 	Params map[string]interface{} `yaml:"params" json:"params"`
 }

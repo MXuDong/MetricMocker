@@ -2,17 +2,33 @@ groups:
   - name: test
     tags:
       tag1: test
+      tag2: test2
     groups:
       - name: test3
     workers:
-      - name: test-worker
+      - name: DefaultLinearFunction
         functionName: DefaultLinearFunction
         clientsName:
-          - StdoutClient
+          - debug_client
+          - prom
+      - name: Test2
+        functionName: StandardLinearFunction
+        FunctionParams:
+          slope: 0.5
+          offsetX: 0
+          offsetY: 0
+        clientsName:
+          - debug_client
+          - prom
   - name: test2
     tags:
       v1: v2
 clients:
-  - name: StdoutClient
+  - name: debug_client
+    type: StdoutClient
     params:
       STDOUT_FILE: STDOUT_FILE
+  - name: prom
+    type: PrometheusClient
+    params:
+      PROMETHEUS_OUTPUT_PORT: ":8080"

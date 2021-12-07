@@ -33,8 +33,8 @@ func (sc *StdoutClient) Init(value map[string]interface{}) error {
 	}
 }
 
-func (sc *StdoutClient) PutValue(value float64, tags map[string]string) {
-	_, err := fmt.Fprintf(sc.output, "'%v': tags:'%v'\n", value, tags)
+func (sc *StdoutClient) PutValue(name string, value float64, tags map[string]string) {
+	_, err := fmt.Fprintf(sc.output, "%s: '%v': tags:'%v'\n", name, value, tags)
 	if err != nil {
 		fmt.Println(err)
 	}
