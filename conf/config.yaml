@@ -6,19 +6,19 @@ groups:
     groups:
       - name: test3
     workers:
-      - name: DefaultLinearFunction
+      - name: DefaultLinearFunctionMocker
         functionName: DefaultLinearFunction
         clientsName:
-          - debug_client
+#          - debug_client
           - prom
-      - name: Test2
+      - name: HalfLinearFunctionMocker
         functionName: StandardLinearFunction
         FunctionParams:
           slope: 0.5
           offsetX: 0
           offsetY: 0
         clientsName:
-          - debug_client
+#          - debug_client
           - prom
   - name: test2
     tags:
