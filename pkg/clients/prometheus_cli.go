@@ -2,7 +2,6 @@ package clients
 
 import (
 	"fmt"
-	"mmocker/utils/log"
 	"net/http"
 	"sync"
 )
@@ -17,7 +16,6 @@ type PrometheusClient struct {
 const PrometheusOutputPort = "PROMETHEUS_OUTPUT_PORT"
 
 func (p *PrometheusClient) Init(value map[string]interface{}) error {
-	log.Logger.Infof("Init prometheus with param: %v", value)
 
 	port := ""
 
