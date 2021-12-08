@@ -9,7 +9,7 @@ type LinearFunction struct {
 }
 
 func (l *LinearFunction) Execute(x float64) float64 {
-	return l.slope*(float64(x)+l.offsetX) + l.offsetY
+	return l.slope*(x+l.offsetX) + l.offsetY
 }
 
 // Init linear function, need slope, offsetX and offsetY
@@ -35,6 +35,13 @@ func NewLinearFunction(slope, offsetX, offsetY float64) Function {
 	}
 	l.Init(initParam)
 	return &l
+}
+func (l *LinearFunction) Params() map[string]float64 {
+	return map[string]float64{
+		"slope":   l.Slope(),
+		"offsetX": l.OffsetX(),
+		"offsetY": l.OffsetY(),
+	}
 }
 
 func (l *LinearFunction) Slope() float64 {

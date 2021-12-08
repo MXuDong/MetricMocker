@@ -10,6 +10,7 @@ type Function interface {
 
 	// Execute return res of input x by function
 	Execute(x float64) float64
+	Params() map[string]float64
 }
 
 const (
@@ -36,4 +37,8 @@ func (z ZeroFunction) Init(m map[string]float64) {
 
 func (z ZeroFunction) Execute(x float64) float64 {
 	return 0
+}
+
+func (z ZeroFunction) Params() map[string]float64 {
+	return map[string]float64{}
 }

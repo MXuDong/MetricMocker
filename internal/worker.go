@@ -5,6 +5,7 @@ import (
 	"mmocker/pkg/funcs"
 	"mmocker/utils"
 	"mmocker/utils/log"
+	"strconv"
 	"time"
 )
 
@@ -108,6 +109,13 @@ func (w *Worker) Load() {
 		c, _ := utils.GetClient(workerItem, "", map[string]interface{}{})
 		w.Clients = append(w.Clients, c)
 	}
+	if w.f != nil {
+		for k, v := range w.f.Params() {
+			w.PutTag(k, strconv.FormatFloat(v, 'f', -1, 64))
+		}
+	}
+
+	w.PutTag("function_name", w.FunctionName)
 }
 
 // GetTag will return current worker tags
