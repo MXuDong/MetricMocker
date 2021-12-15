@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/spf13/viper"
 	"mmocker/conf"
-	"mmocker/utils"
+	"mmocker/pkg/clients"
 	"mmocker/utils/log"
 	"os"
 	"time"
@@ -17,7 +17,34 @@ func init() {
 
 // main func bootstrap the metric-mocker
 func main() {
+	metrics := InitConf()
 
+	// init client
+	var cs []clients.Client
+	for _, clientItem := range metrics.Clients {
+		if c, err := clients.GetClient(clientItem.Name, clientItem.Type, clientItem.Params); err != nil {
+			panic(err)
+		} else {
+			cs = append(cs, c)
+		}
+	}
+	for _, p := range metrics.Processors {
+		_ = p.Load()
+
+		// register to client
+		for _, client := range p.ClientNames {
+			clientItem, err := clients.GetClient(client, "", map[string]interface{}{})
+			if err != nil {
+				continue
+			}
+			clientItem.Register(p)
+		}
+	}
+
+	Start(cs)
+}
+
+func InitConf() *conf.Configs {
 	confPath := ""
 	flag.StringVar(&confPath, "c", "./conf/config.yaml", "-c config-path")
 	flag.Parse()
@@ -27,32 +54,24 @@ func main() {
 		confPath = v
 	}
 
-	metrics := InitConf(confPath)
 	log.Logger.Infof("Init log from path: %s", confPath)
-	// init client
 
-	for _, clientItem := range metrics.Clients {
-		if _, err := utils.GetClient(clientItem.Name, clientItem.Type, clientItem.Params); err != nil {
-			panic(err)
-		}
-	}
-	for _, group := range metrics.Groups {
-		group.PushTag()
-		group.Load()
-		group.Do()
-	}
-
-	log.Logger.Infof("Start the applications")
-	for {
-		// keep main handler
-		time.Sleep(1000)
-	}
-}
-
-func InitConf(configPath string) *conf.Configs {
 	c := &conf.Configs{}
-	viper.SetConfigFile(configPath)
+	viper.SetConfigFile(confPath)
 	_ = viper.ReadInConfig()
 	viper.Unmarshal(c)
 	return c
+}
+
+// Start will hold on the application, and use debug-out client
+func Start(cs []clients.Client) {
+	log.Logger.Infof("Start the applications")
+	timeTickerChan := time.Tick(time.Duration(5) * time.Second)
+	for {
+		// keep main handler
+		for _, ci := range cs {
+			ci.Output()
+		}
+		<-timeTickerChan
+	}
 }

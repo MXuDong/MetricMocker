@@ -1,10 +1,12 @@
 package conf
 
-import "mmocker/internal"
+import (
+	"mmocker/pkg"
+)
 
 type Configs struct {
-	Groups  []internal.Group `yaml:"groups" json:"groups"`
-	Clients []Client         `yaml:"clients" json:"clients"`
+	Processors []*pkg.Processor `yaml:"processors" json:"processors"`
+	Clients    []Client         `yaml:"clients" json:"clients"`
 }
 
 type Client struct {

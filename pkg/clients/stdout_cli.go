@@ -2,6 +2,7 @@ package clients
 
 import (
 	"fmt"
+	"mmocker/pkg"
 	"os"
 )
 
@@ -10,6 +11,7 @@ const StdoutFile = "STDOUT_FILE"
 type StdoutClient struct {
 	param  map[string]interface{}
 	output *os.File
+	procs  []*pkg.Processor
 }
 
 func (sc *StdoutClient) GetParam() map[string]interface{} {
@@ -33,9 +35,23 @@ func (sc *StdoutClient) Init(value map[string]interface{}) error {
 	}
 }
 
-func (sc *StdoutClient) PutValue(name string, value float64, tags map[string]string) {
-	_, err := fmt.Fprintf(sc.output, "%s: '%v': tags:'%v'\n", name, value, tags)
-	if err != nil {
-		fmt.Println(err)
+func (sc *StdoutClient) Output() {
+	if sc.procs == nil {
+		return
+	}
+
+	for _, procItem := range sc.procs {
+		for _, valueItem := range procItem.Get() {
+			fmt.Printf("Name: %s, tag: %v, value: %.2f\n", valueItem.Name, valueItem.Tags, valueItem.Value)
+		}
+	}
+}
+
+func (sc *StdoutClient) Register(processor *pkg.Processor) {
+	if sc.procs == nil {
+		sc.procs = make([]*pkg.Processor, 0)
+	}
+	if processor != nil {
+		sc.procs = append(sc.procs, processor)
 	}
 }

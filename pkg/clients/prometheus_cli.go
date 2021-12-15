@@ -2,15 +2,16 @@ package clients
 
 import (
 	"fmt"
+	"mmocker/pkg"
 	"net/http"
 	"sync"
 )
 
 type PrometheusClient struct {
 	params map[string]interface{}
-	values map[string]float64
 	tags   map[string]map[string]string
 	lock   *sync.RWMutex
+	procs  []*pkg.Processor
 }
 
 const PrometheusOutputPort = "PROMETHEUS_OUTPUT_PORT"
@@ -30,22 +31,20 @@ func (p *PrometheusClient) Init(value map[string]interface{}) error {
 	p.lock = &sync.RWMutex{}
 
 	p.params = value
-	p.values = make(map[string]float64, 0)
 	p.tags = make(map[string]map[string]string, 0)
 	s := http.NewServeMux()
 	s.HandleFunc("/", func(writer http.ResponseWriter, request *http.Request) {
-		for key, value := range p.values {
-			tags := p.tags[key]
-			tagStr := ""
-			if tags != nil {
-				for tagKey, tagValue := range tags {
+		for _, processor := range p.procs {
+			for _, valueItem := range processor.Get() {
+				tagStr := ""
+				for tagKey, tagValue := range valueItem.Tags {
 					tagStr += fmt.Sprintf("%s=\"%s\",", tagKey, tagValue)
 				}
 				tagStr = tagStr[:len(tagStr)-1]
+				itemStr := fmt.Sprintf("%s{%s} %f", valueItem.Name, tagStr, valueItem.Value)
+				_, _ = writer.Write([]byte(itemStr))
+				_, _ = writer.Write([]byte("\n"))
 			}
-			itemStr := fmt.Sprintf("%s{%s} %f", key, tagStr, value)
-			_, _ = writer.Write([]byte(itemStr))
-			_, _ = writer.Write([]byte("\n"))
 		}
 	})
 	go func() {
@@ -63,10 +62,16 @@ func (p *PrometheusClient) GetParam() map[string]interface{} {
 	return p.params
 }
 
-// PutValue in prometheus is cover put
-func (p *PrometheusClient) PutValue(name string, value float64, tags map[string]string) {
-	p.lock.Lock()
-	defer p.lock.Unlock()
-	p.values[name] = value
-	p.tags[name] = tags
+// Output in prometheus is cover put
+func (p *PrometheusClient) Output() {
+
+}
+
+func (pc *PrometheusClient) Register(processor *pkg.Processor) {
+	if pc.procs == nil {
+		pc.procs = make([]*pkg.Processor, 0)
+	}
+	if processor != nil {
+		pc.procs = append(pc.procs, processor)
+	}
 }

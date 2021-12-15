@@ -1,35 +1,19 @@
-groups:
-  - name: test
-    tags:
-      function: LinearFunction
-    groups:
-      - name: test3
-    workers:
-      - name: DefaultLinearFunctionMocker
-        functionName: DefaultLinearFunction
-        clientsName:
-          #          - debug_client
-          - prom
-      - name: HalfLinearFunctionMocker
-        functionName: StandardLinearFunction
-        functionParams:
+Processors:
+  - Name: test-processor
+    Tags:
+      v1: test1
+    Functions:
+      - Name: DefaultLinearFunction
+        FuncName: Default test
+      - FuncName: StandardLinearFunction test
+        Name: StandardLinearFunction
+        Params:
           slope: 0.5
           offsetX: 0
           offsetY: 0
-        clientsName:
-          #          - debug_client
-          - prom
-      - name: MinuteLinearFunctionMocker
-        functionName: StandardLinearFunction
-        functionParams:
-          slope: 0.017
-          offsetX: 0
-          offsetY: 0
-        clientsName:
-          - prom
-  - name: test2
-    tags:
-      v1: v2
+    ClientNames:
+      - debug_client
+      - prom
 clients:
   - name: debug_client
     type: StdoutClient
