@@ -44,7 +44,7 @@ spec:
     spec:
       containers:
         - name: metric-mocker
-          image: mxudong/metric-mocker:v1
+          image: mxudong/metric-mocker:v1.0.3
           ports:
             - containerPort: 8080
               name: http-prom-port

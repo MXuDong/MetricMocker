@@ -1,5 +1,5 @@
 Processors:
-  - Name: test-processor
+  - Name: test_processor
     Tags:
       v1: test1
     Functions:

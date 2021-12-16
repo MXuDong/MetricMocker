@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"mmocker/pkg"
 	"net/http"
+	"strings"
 	"sync"
 )
 
@@ -38,10 +39,11 @@ func (p *PrometheusClient) Init(value map[string]interface{}) error {
 			for _, valueItem := range processor.Get() {
 				tagStr := ""
 				for tagKey, tagValue := range valueItem.Tags {
-					tagStr += fmt.Sprintf("%s=\"%s\",", tagKey, tagValue)
+					tagVStr := strings.ReplaceAll(tagValue, " ", "_")
+					tagStr += fmt.Sprintf("%s=\"%s\",", tagKey, tagVStr)
 				}
 				tagStr = tagStr[:len(tagStr)-1]
-				itemStr := fmt.Sprintf("%s{%s} %f", valueItem.Name, tagStr, valueItem.Value)
+				itemStr := fmt.Sprintf("%s{%s} %e", valueItem.Name, tagStr, valueItem.Value)
 				_, _ = writer.Write([]byte(itemStr))
 				_, _ = writer.Write([]byte("\n"))
 			}
