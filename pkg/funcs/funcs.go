@@ -17,6 +17,10 @@ const (
 	Slope   = "slope"
 	OffsetX = "offsetX"
 	OffsetY = "offsetY"
+
+	Range = "range"
+	Seed = "seed"
+	BasePoint = "base-point"
 )
 
 // GetParam return the param value, if not exits, return default value

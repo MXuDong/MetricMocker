@@ -14,6 +14,8 @@ func GetFunc(name string, param map[string]float64) Function {
 		return DefaultLinearFunction()
 	case "ReverseLinearFunction": // y = -x
 		return ReverseLinearFunction()
+	case "StandardRandomFunction":
+		return StandardRandomFunction(param)
 	default:
 		// can't find any function, return funcs.ZeroFunction
 		return ZeroFunction{}

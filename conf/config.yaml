@@ -1,5 +1,5 @@
 Processors:
-  - Name: test_processor
+  - Name: metric_mocker_test_func_processor
     Tags:
       v1: test1
     Functions:
@@ -11,8 +11,14 @@ Processors:
           slope: 0.5
           offsetX: 0
           offsetY: 0
+      - FuncName: StandardRandomFunction
+        Name: StandardRandomFunction
+        Params:
+          range: 10
+          seed: 12345
+          base-point: 10
     ClientNames:
-      - debug_client
+#      - debug_client
       - prom
 clients:
   - name: debug_client
