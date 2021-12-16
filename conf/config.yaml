@@ -18,7 +18,7 @@ Processors:
           seed: 12345
           base-point: 10
     ClientNames:
-#      - debug_client
+      - debug_client
       - prom
 clients:
   - name: debug_client
@@ -29,3 +29,5 @@ clients:
     type: PrometheusClient
     params:
       PROMETHEUS_OUTPUT_PORT: ":8080"
+application:
+  ticker: 10

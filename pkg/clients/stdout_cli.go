@@ -3,15 +3,17 @@ package clients
 import (
 	"fmt"
 	"mmocker/pkg"
+	"mmocker/utils/log"
 	"os"
 )
 
 const StdoutFile = "STDOUT_FILE"
 
 type StdoutClient struct {
-	param  map[string]interface{}
-	output *os.File
-	procs  []*pkg.Processor
+	param   map[string]interface{}
+	output  *os.File
+	procs   []*pkg.Processor
+	enabled bool
 }
 
 func (sc *StdoutClient) GetParam() map[string]interface{} {
@@ -20,8 +22,11 @@ func (sc *StdoutClient) GetParam() map[string]interface{} {
 
 func (sc *StdoutClient) Init(value map[string]interface{}) error {
 	sc.param = value
+	sc.enabled = true
 	if outP, ok := value[StdoutFile]; !ok {
-		return fmt.Errorf("Stdout file can't find ")
+		log.Logger.Warnf("Output file not find, checkout to disbale.")
+		sc.enabled = false
+		return nil
 	} else {
 		if output, ok := outP.(*os.File); ok {
 			sc.output = output
@@ -36,6 +41,9 @@ func (sc *StdoutClient) Init(value map[string]interface{}) error {
 }
 
 func (sc *StdoutClient) Output() {
+	if !sc.enabled {
+		return
+	}
 	if sc.procs == nil {
 		return
 	}

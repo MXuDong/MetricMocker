@@ -33,6 +33,7 @@ func main() {
 
 		// register to client
 		for _, client := range p.ClientNames {
+			log.Logger.Infof("Register {%s} to {%s}", p.Name, client)
 			clientItem, err := clients.GetClient(client, "", map[string]interface{}{})
 			if err != nil {
 				continue
@@ -40,8 +41,11 @@ func main() {
 			clientItem.Register(p)
 		}
 	}
-
-	Start(cs)
+	dur := metrics.Application.Ticker
+	if dur < 1 {
+		dur = 5
+	}
+	Start(cs, dur)
 }
 
 func InitConf() *conf.Configs {
@@ -64,9 +68,9 @@ func InitConf() *conf.Configs {
 }
 
 // Start will hold on the application, and use debug-out client
-func Start(cs []clients.Client) {
+func Start(cs []clients.Client, ticker int) {
 	log.Logger.Infof("Start the applications")
-	timeTickerChan := time.Tick(time.Duration(5) * time.Second)
+	timeTickerChan := time.Tick(time.Duration(ticker) * time.Second)
 	for {
 		// keep main handler
 		for _, ci := range cs {
