@@ -24,7 +24,7 @@ clients:
   - name: debug_client
     type: StdoutClient
     params:
-      STDOUT_FILE: STDOUT_FILE
+      STDOUT_FILE: STDOUT_FILE # If you want to disable the debug_client, delete this line.
   - name: prom
     type: PrometheusClient
     params:

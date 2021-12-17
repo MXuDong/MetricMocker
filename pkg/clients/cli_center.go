@@ -13,7 +13,7 @@ func GetClient(name, typ string, param map[string]interface{}) (Client, error) {
 		return v, nil
 	}
 
-	log.Logger.Infof("Not cached fount special client: {%s} in type: {%s}, load.", name, typ)
+	log.Logger.Warnf("Not cached fount special client: {%s} in type: {%s}, load.", name, typ)
 
 	var client Client
 	switch typ {
