@@ -51,8 +51,8 @@ func (p *Processor) Load() error {
 			}
 			funcItem.tags[utils.TagFuncStr] = funcItem.FuncName
 			funcItem.tags[utils.TagFuncNameStr] = funcItem.Name
-			if funcItem.Params != nil {
-				for k, v := range funcItem.Params {
+			if funcItem.f != nil {
+				for k, v := range funcItem.f.Params() {
 					funcItem.tags[k] = fmt.Sprintf("%.2f", v)
 				}
 			}

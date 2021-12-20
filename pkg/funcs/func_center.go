@@ -16,6 +16,16 @@ func GetFunc(name string, param map[string]float64) Function {
 		return ReverseLinearFunction()
 	case "StandardRandomFunction":
 		return StandardRandomFunction(param)
+	case "StandardLinearPeak":
+		return StandardLinearPeak(param)
+	case "SecondLinearPeak":
+		return SecondLinearPeak()
+	case "MinuteLinearPeak":
+		return MinuteLinearPeak()
+	case "HourLinearPeak":
+		return HourLinearPeak()
+	case "DayLinearPeak":
+		return DayLinearPeak()
 	default:
 		// can't find any function, return funcs.ZeroFunction
 		return ZeroFunction{}

@@ -17,9 +17,10 @@ const (
 	Slope   = "slope"
 	OffsetX = "offsetX"
 	OffsetY = "offsetY"
+	Ratio   = "ratio"
 
-	Range = "range"
-	Seed = "seed"
+	Range     = "range"
+	Seed      = "seed"
 	BasePoint = "base-point"
 )
 

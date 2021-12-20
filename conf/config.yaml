@@ -17,6 +17,14 @@ Processors:
           range: 10
           seed: 12345
           base-point: 10
+      - FuncName: SecondLinearPeak
+        Name: SecondLinearPeak
+      - FuncName: MinuteLinearPeak
+        Name: MinuteLinearPeak
+      - FuncName: HourLinearPeak
+        Name: HourLinearPeak
+      - FuncName: DayLinearPeak
+        Name: DayLinearPeak
     ClientNames:
       - debug_client
       - prom
@@ -24,10 +32,10 @@ clients:
   - name: debug_client
     type: StdoutClient
     params:
-      STDOUT_FILE: STDOUT_FILE # If you want to disable the debug_client, delete this line.
+#      STDOUT_FILE: STDOUT_FILE # If you want to disable the debug_client, delete this line.
   - name: prom
     type: PrometheusClient
     params:
       PROMETHEUS_OUTPUT_PORT: ":8080"
 application:
-  ticker: 10
+  ticker: 5

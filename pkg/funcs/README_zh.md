@@ -1,38 +1,36 @@
-# Functions
+# 函数
 
-## DefaultFunction
+## 全局默认函数
 
-Function name: `default`
+函数名称: `default`
 
-if function-name not match any func, use it as default function.
+特殊的，如果没有任何函数名能够匹配，则使用该函数。
 
-### Params
+### 参数
 
-no param
+无需参数
 
-### Expression
+### 表达式
 
 `y = 0`
 
 ---
 
-## LinearFunction
+## 线性函数
 
 Function name: `StandardLinearFunction`
 
-### Params
+### 参数
 
 - slope
 - offsetX
 - offsetY
 
-### Expression
-
-Input: x (`int64`)
+### 表达式
 
 `y = slope * (x + offsetX) + offsetY`
 
-### Inner set:
+### 内置预设函数
 
 `DefaultLinearFunction`
 
@@ -48,40 +46,40 @@ Input: x (`int64`)
 
 ---
 
-## RandomFunction
+## 随机函数
 
-Function name `StandardRandomFunction`
+函数名 `StandardRandomFunction`
 
-### Params:
+### 参数
 
 - range
 - seed
 - base-point
 
-### Expression
+### 表达式
 
-rand generate by seed
+rand 由 seed 作为种子生成
 
 y = base-point + rand()
 
 base-point <= y <= base-point + range(ceil)
 
-## LinearPeak function
+## 线性峰值函数
 
-Function name `StandardLinearPeak`
+函数名 `StandardLinearPeak`
 
-### Params:
+### 参数
 
 - range
 - offsetX
 - offsetY
 - ratio
 
-### Expression
+### 表达式
 
-`y = ratio * ((x + offsetX) % range) + offsetY`
+y = ratio * ((x + offsetX) % range) + offsetY
 
-### Inner set:
+### 内置预设函数
 
 `SecondLinearPeak`
 
@@ -98,12 +96,14 @@ Function name `StandardLinearPeak`
 - offsetY: 0
 
 `HourLinearPeak`
+
 - range: 3600
 - ratio: 1
 - offsetX: 0
 - offsetY: 0
 
 `DayLinearPeak`
+
 - range: 86400
 - ratio: 1
 - offsetX: 0
