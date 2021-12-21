@@ -8,6 +8,10 @@
 
 [https://hub.docker.com/repository/docker/mxudong/metric-mocker/general](https://hub.docker.com/repository/docker/mxudong/metric-mocker/general)
 
+# Support client
+- [x] Prometheus
+- [ ] InfluxDB
+
 # About
 
 ## About Functions:

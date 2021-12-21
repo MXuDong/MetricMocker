@@ -15,16 +15,16 @@ type ValueItem struct {
 }
 
 type FuncPackage struct {
-	f        funcs.Function
-	Name     string
-	FuncName string
-	Params   map[string]float64
+	f             funcs.Function
+	FuncName      string // the function name for find func
+	FuncNameAlias string // the function name in processor
+	Params        map[string]float64
 
 	tags map[string]string
 }
 
 func (fp *FuncPackage) Load() {
-	fp.f = funcs.GetFunc(fp.Name, fp.Params)
+	fp.f = funcs.GetFunc(fp.FuncName, fp.Params)
 }
 
 type Processor struct {
@@ -49,8 +49,8 @@ func (p *Processor) Load() error {
 			for k, v := range p.Tags {
 				funcItem.tags[k] = v
 			}
-			funcItem.tags[utils.TagFuncStr] = funcItem.FuncName
-			funcItem.tags[utils.TagFuncNameStr] = funcItem.Name
+			funcItem.tags[utils.TagFuncStr] = funcItem.FuncNameAlias
+			funcItem.tags[utils.TagFuncNameStr] = funcItem.FuncName
 			if funcItem.f != nil {
 				for k, v := range funcItem.f.Params() {
 					funcItem.tags[k] = fmt.Sprintf("%.2f", v)

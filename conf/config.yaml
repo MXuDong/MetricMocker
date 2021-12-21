@@ -3,28 +3,28 @@ Processors:
     Tags:
       v1: test1
     Functions:
-      - Name: DefaultLinearFunction
-        FuncName: Default test
-      - FuncName: StandardLinearFunction test
-        Name: StandardLinearFunction
+      - FuncName: DefaultLinearFunction
+        FuncNameAliasAlias: Default test
+      - FuncNameAlias: StandardLinearFunction test
+        FuncName: StandardLinearFunction
         Params:
           slope: 0.5
           offsetX: 0
           offsetY: 0
-      - FuncName: StandardRandomFunction
-        Name: StandardRandomFunction
+      - FuncNameAlias: StandardRandomFunction
+        FuncName: StandardRandomFunction
         Params:
           range: 10
           seed: 12345
           base-point: 10
-      - FuncName: SecondLinearPeak
-        Name: SecondLinearPeak
-      - FuncName: MinuteLinearPeak
-        Name: MinuteLinearPeak
-      - FuncName: HourLinearPeak
-        Name: HourLinearPeak
-      - FuncName: DayLinearPeak
-        Name: DayLinearPeak
+      - FuncNameAlias: RangeSecondLinearPeak
+        FuncName: RangeSecondLinearPeak
+      - FuncNameAlias: RangeMinuteLinearPeak
+        FuncName: RangeMinuteLinearPeak
+      - FuncNameAlias: RangeHourLinearPeak
+        FuncName: RangeHourLinearPeak
+#      - FuncNameAlias: RangeDayLinearPeak
+#        FuncName: RangeDayLinearPeak
     ClientNames:
       - debug_client
       - prom

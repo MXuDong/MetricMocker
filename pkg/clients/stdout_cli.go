@@ -50,7 +50,7 @@ func (sc *StdoutClient) Output() {
 
 	for _, procItem := range sc.procs {
 		for _, valueItem := range procItem.Get() {
-			fmt.Printf("Name: %s, tag: %v, value: %.2f\n", valueItem.Name, valueItem.Tags, valueItem.Value)
+			fmt.Printf("FuncName: %s, tag: %v, value: %.2f\n", valueItem.Name, valueItem.Tags, valueItem.Value)
 		}
 	}
 }
