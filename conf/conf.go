@@ -17,5 +17,13 @@ type Client struct {
 }
 
 type Application struct {
-	Ticker int `yaml:"ticker" json:"ticker"`
+	Ticker             int                `yaml:"ticker" json:"ticker"`
+	NodeId             string             `yaml:"nodeId"` // Bind with the environment. If empty, set local directly.
+	ObjectMockerConfig ObjectMockerConfig `yaml:"objectMockerConfig"`
+}
+
+type ObjectMockerConfig struct {
+	Enable       bool   `yaml:"enable"`
+	Host         string `yaml:"host"`
+	SyncInterval string `yaml:"syncInterval"`
 }

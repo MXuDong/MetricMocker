@@ -5,6 +5,7 @@ go 1.17
 require github.com/spf13/viper v1.9.0
 
 require (
+	github.com/application-mocker/object-client v0.0.0-20211228092541-4d1ae182b1cf // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/magiconair/properties v1.8.5 // indirect

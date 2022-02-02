@@ -6,8 +6,10 @@ import (
 	"github.com/spf13/viper"
 	"mmocker/conf"
 	"mmocker/pkg/clients"
+	"mmocker/utils"
 	"mmocker/utils/log"
 	"os"
+	"syscall"
 	"time"
 )
 
@@ -49,6 +51,7 @@ func main() {
 }
 
 func InitConf() *conf.Configs {
+	log.Logger.Trace("Init the config")
 	confPath := ""
 	flag.StringVar(&confPath, "c", "./conf/config.yaml", "-c config-path")
 	flag.Parse()
@@ -62,8 +65,23 @@ func InitConf() *conf.Configs {
 
 	c := &conf.Configs{}
 	viper.SetConfigFile(confPath)
-	_ = viper.ReadInConfig()
-	viper.Unmarshal(c)
+	if err := viper.ReadInConfig(); err != nil{
+		log.Logger.Error(err)
+		syscall.Exit(1)
+	}
+
+	if err := viper.Unmarshal(c); err != nil {
+		log.Logger.Error(err)
+		syscall.Exit(1)
+	}
+
+	// check the node-id, if the value is emtpy, set local directly.
+	nodeId := os.Getenv("NODE_ID")
+	if len(nodeId) == 0{
+		nodeId = utils.Local_str
+	}
+	c.Application.NodeId = nodeId
+
 	return c
 }
 

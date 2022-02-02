@@ -39,3 +39,6 @@ clients:
       PROMETHEUS_OUTPUT_PORT: ":8080"
 application:
   ticker: 5
+  objectClient:
+    enable: false
+    host: "http://object-mocker.mockers.svc:3000"
