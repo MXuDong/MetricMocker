@@ -5,6 +5,10 @@ import (
 	"mmocker/utils"
 )
 
+const (
+	BaseLinearFunctionType = "BaseLinearFunction"
+)
+
 // BaseLinearFunction y = slope * (x + offsetX) + offsetY
 type BaseLinearFunction struct {
 	BaseFunc
@@ -49,4 +53,8 @@ func (b BaseLinearFunction) Call(f float32) (float32, error) {
 	}
 
 	return b.slope*(b.offsetX+x) + b.offsetY, nil
+}
+
+func (b BaseLinearFunction)Type()TypeStr{
+	return "BaseLinearFunction"
 }

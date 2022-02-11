@@ -2,42 +2,17 @@ Processors:
   - Name: metric_mocker_test_func_processor
     Tags:
       v1: test1
-    Functions:
-      - FuncName: DefaultLinearFunction
-        FuncNameAliasAlias: Default test
-      - FuncNameAlias: StandardLinearFunction test
-        FuncName: StandardLinearFunction
-        Params:
-          slope: 0.5
-          offsetX: 0
-          offsetY: 0
-      - FuncNameAlias: StandardRandomFunction
-        FuncName: StandardRandomFunction
-        Params:
-          range: 10
-          seed: 12345
-          base-point: 10
-      - FuncNameAlias: RangeSecondLinearPeak
-        FuncName: RangeSecondLinearPeak
-      - FuncNameAlias: RangeMinuteLinearPeak
-        FuncName: RangeMinuteLinearPeak
-      - FuncNameAlias: RangeHourLinearPeak
-        FuncName: RangeHourLinearPeak
-#      - FuncNameAlias: RangeDayLinearPeak
-#        FuncName: RangeDayLinearPeak
-    ClientNames:
+    FunctionParamsList:
+      - Type: BaseLinearFunction
+        Name: Test
+    Clients:
       - debug_client
-      - prom
-clients:
+Clients:
   - name: debug_client
     type: StdoutClient
     params:
 #      STDOUT_FILE: STDOUT_FILE # If you want to disable the debug_client, delete this line.
-  - name: prom
-    type: PrometheusClient
-    params:
-      PROMETHEUS_OUTPUT_PORT: ":8080"
-application:
+Application:
   ticker: 5
   objectClient:
     enable: false

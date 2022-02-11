@@ -1,14 +1,17 @@
 package conf
 
+import "mmocker/pkg/proc"
+
 type Configs struct {
-	Clients     []Client    `yaml:"clients" json:"clients"`
-	Application Application `yaml:"application"`
+	Clients     []Client    `yaml:"Clients" json:"clients"`
+	Application Application `yaml:"Application"`
+	Processors []proc.Processor `yaml:"Processors"`
 }
 
 type Client struct {
 	Name   string                 `yaml:"name" json:"name"`
 	Type   string                 `yaml:"type" json:"type"`
-	Params map[string]interface{} `yaml:"params" json:"params"`
+	Params map[interface{}]interface{} `yaml:"params" json:"params"`
 }
 
 type Application struct {

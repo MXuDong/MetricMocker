@@ -19,35 +19,50 @@ func init() {
 
 // main func bootstrap the metric-mocker
 func main() {
-	metrics := InitConf()
+	//metrics := InitConf()
+	//
+	//// init client
+	//var cs []clients.Client
+	//for _, clientItem := range metrics.Clients {
+	//	if c, err := clients.GetClient(clientItem.Name, clientItem.Type, clientItem.Params); err != nil {
+	//		panic(err)
+	//	} else {
+	//		cs = append(cs, c)
+	//	}
+	//}
+	//for _, p := range metrics.Processors {
+	//	_ = p.Load()
+	//
+	//	// register to client
+	//	for _, client := range p.ClientNames {
+	//		log.Logger.Infof("Register {%s} to {%s}", p.Name, client)
+	//		clientItem, err := clients.GetClient(client, "", map[string]interface{}{})
+	//		if err != nil {
+	//			continue
+	//		}
+	//		clientItem.Register(p)
+	//	}
+	//}
+	//dur := metrics.Application.Ticker
+	//if dur < 1 {
+	//	dur = 5
+	//}
+	//Start(cs, dur)
 
-	// init client
-	var cs []clients.Client
-	for _, clientItem := range metrics.Clients {
-		if c, err := clients.GetClient(clientItem.Name, clientItem.Type, clientItem.Params); err != nil {
-			panic(err)
-		} else {
-			cs = append(cs, c)
-		}
-	}
-	for _, p := range metrics.Processors {
-		_ = p.Load()
+	config := InitConf()
 
-		// register to client
-		for _, client := range p.ClientNames {
-			log.Logger.Infof("Register {%s} to {%s}", p.Name, client)
-			clientItem, err := clients.GetClient(client, "", map[string]interface{}{})
-			if err != nil {
-				continue
-			}
-			clientItem.Register(p)
-		}
+	for _, item := range config.Clients {
+		clients.Client(item.Name, item.Type, item.Params)
 	}
-	dur := metrics.Application.Ticker
-	if dur < 1 {
-		dur = 5
+
+	for _, item := range config.Processors {
+		item.Load()
 	}
-	Start(cs, dur)
+
+	for true {
+		time.Sleep(5 * time.Second)
+	}
+
 }
 
 func InitConf() *conf.Configs {
@@ -65,7 +80,7 @@ func InitConf() *conf.Configs {
 
 	c := &conf.Configs{}
 	viper.SetConfigFile(confPath)
-	if err := viper.ReadInConfig(); err != nil{
+	if err := viper.ReadInConfig(); err != nil {
 		log.Logger.Error(err)
 		syscall.Exit(1)
 	}
@@ -77,23 +92,10 @@ func InitConf() *conf.Configs {
 
 	// check the node-id, if the value is emtpy, set local directly.
 	nodeId := os.Getenv("NODE_ID")
-	if len(nodeId) == 0{
+	if len(nodeId) == 0 {
 		nodeId = utils.Local_str
 	}
 	c.Application.NodeId = nodeId
 
 	return c
-}
-
-// Start will hold on the application, and use debug-out client
-func Start(cs []clients.Client, ticker int) {
-	log.Logger.Infof("Start the applications")
-	timeTickerChan := time.Tick(time.Duration(ticker) * time.Second)
-	for {
-		// keep main handler
-		for _, ci := range cs {
-			ci.Output()
-		}
-		<-timeTickerChan
-	}
 }

@@ -5,8 +5,11 @@ import (
 	"strconv"
 )
 
+type TypeStr string
+
 // BaseFuncInterface define the func. Is the abstract of the instance
 type BaseFuncInterface interface {
+	Type() TypeStr
 
 	// Expression return the expression of function. And all the params should with value, not the symbol.
 	// For example:
@@ -103,6 +106,10 @@ type ConstantValueFunction struct {
 	value float32
 }
 
+func (b ConstantValueFunction) Type() TypeStr {
+	return "ConstantValueFunction"
+}
+
 // Expression return value directly.
 func (b ConstantValueFunction) Expression() string {
 	return strconv.FormatFloat(float64(b.value), 'f', -1, 32)
@@ -139,6 +146,10 @@ func (b ConstantValueFunction) Call(f float32) (float32, error) {
 
 // MetadataUnitFunction is the base function of key
 type MetadataUnitFunction struct {
+}
+
+func (m MetadataUnitFunction) Type() TypeStr {
+	return "MetadataUnitFunction"
 }
 
 func (m MetadataUnitFunction) Expression() string {
