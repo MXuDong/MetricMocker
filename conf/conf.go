@@ -1,13 +1,8 @@
 package conf
 
-import (
-	"mmocker/pkg"
-)
-
 type Configs struct {
-	Processors  []*pkg.Processor `yaml:"processors" json:"processors"`
-	Clients     []Client         `yaml:"clients" json:"clients"`
-	Application Application      `yaml:"application"`
+	Clients     []Client    `yaml:"clients" json:"clients"`
+	Application Application `yaml:"application"`
 }
 
 type Client struct {
