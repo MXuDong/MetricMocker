@@ -27,6 +27,7 @@ type Processor struct {
 	Clients []string `yaml:"Clients"`
 
 	ClientInstances []clients.BaseClientInterface
+	CronStr         string `yaml:"CronStr"`
 }
 
 func (p *Processor) Load() {
@@ -72,7 +73,11 @@ func (p *Processor) Load() {
 
 	cItem := cron.New()
 	cItem.Start()
-	cItem.AddFunc("@every 5s", func() {
+	cronStr := p.CronStr
+	if len(cronStr) == 0 {
+		cronStr = "@every 5s"
+	}
+	cItem.AddFunc(cronStr, func() {
 		res := p.Values()
 		for _, clientItem := range p.ClientInstances {
 			clientItem.Push(p.Name, res)

@@ -15,13 +15,21 @@ Processors:
             name: Start-Zero-func
       - Type: StartZeroFuncType
         Name: Start-Zero-func
+    CronStr: "@every 1s"
     Clients:
       - debug_client
+      - influx-test-client
 Clients:
   - name: debug_client
     type: StdoutClient
     params:
 #      STDOUT_FILE: STDOUT_FILE # If you want to disable the debug_client, delete this line.
+  - name: influx-test-client
+    type: InfluxDBV1
+    params:
+      ServerURL: "http://127.0.0.1:8086"
+      Database: test
+      Table: test2
 Application:
   ticker: 5
   objectClient:
