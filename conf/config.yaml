@@ -1,10 +1,20 @@
 Processors:
-  - Name: metric_mocker_test_func_processor
+  - Name: test-p
     Tags:
       v1: test1
     FunctionParamsList:
+#      - Type: BaseLinearFunction
+#        Name: Test1
       - Type: BaseLinearFunction
-        Name: Test
+        Name: Test2
+        Params:
+          slope: 2.0
+        KeyFunctions:
+          x:
+            type: StartZeroFuncType
+            name: Start-Zero-func
+      - Type: StartZeroFuncType
+        Name: Start-Zero-func
     Clients:
       - debug_client
 Clients:

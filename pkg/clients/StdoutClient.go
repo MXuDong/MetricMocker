@@ -15,7 +15,14 @@ func (s *StdoutClient) Init(param map[interface{}]interface{}) {
 	cronInstance.Start()
 
 	eId, err := cronInstance.AddFunc("@every 5s", func() {
-		fmt.Printf("%v", s.keys)
+		if s.keys != nil {
+			for processorName, item := range s.keys {
+				for funcName, value := range item {
+					fmt.Printf("Proc: %s, FuncName: %s, Value: %.2f, Tags: %v\n", processorName, funcName, value.Value, value.Tags)
+				}
+			}
+			fmt.Printf("\n")
+		}
 	})
 
 	if err != nil {

@@ -20,8 +20,12 @@ func Function(param FunctionParams) BaseFuncInterface {
 
 
 	switch param.Type{
-	case "BaseLinearFunction":
+	case "MetadataUnitFunction":
+		funcItem = &MetadataUnitFunction{}
+	case BaseLinearFunctionType:
 		funcItem = &BaseLinearFunction{}
+	case StartZeroFuncType:
+		funcItem = &StartZeroFunc{}
 	}
 
 	if funcItem == nil{
@@ -29,6 +33,11 @@ func Function(param FunctionParams) BaseFuncInterface {
 	}
 
 	funcItem.Init(param.Params)
+
+	for key, _ := range funcItem.KeyMap(){
+		// use MetadataUnitFunction as default function.
+		funcItem.SetKeyFunc(key, &MetadataUnitFunction{})
+	}
 
 	for key, keyFunction := range functionKeyFunctions {
 		funcItem.SetKeyFunc(key, keyFunction)

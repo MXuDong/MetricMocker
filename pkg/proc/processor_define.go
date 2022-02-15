@@ -60,6 +60,7 @@ func (p *Processor) Load() {
 
 				p.FunctionTags[FunctionName(name)][keyStr] = valueStr
 			}
+			p.FunctionTags[FunctionName(name)]["expression"] = f.Expression()
 		}
 	}
 	// load client
@@ -86,7 +87,7 @@ func (p Processor) Values() map[string]common.FunctionResult {
 	for funcName, funcItem := range p.Functions {
 		fr := common.FunctionResult{}
 
-		res, err := funcItem.Call(float32(nowTime))
+		res, err := funcItem.Call(float64(nowTime))
 		if err != nil {
 			// log err
 		} else {

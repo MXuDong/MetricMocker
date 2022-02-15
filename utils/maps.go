@@ -53,9 +53,18 @@ func GetStringWithDefault(mapItem map[interface{}]interface{}, key interface{}, 
 
 // GetFloat32WithDefault return float32 value from mapItem. If value not found, or can't convert to float32. Return
 // defaultValue.
-func GetFloat32WithDefault(mapItem map[interface{}]interface{}, key interface{}, defaultValue float32) float32 {
+func GetFloat32WithDefault(mapItem map[interface{}]interface{}, key interface{}, defaultValue float32) (res float32) {
 	value := GetValueWithDefault(mapItem, key, defaultValue)
 	if data, ok := value.(float32); ok {
+		return data
+	}
+	return defaultValue
+}
+
+
+func GetFloat64WithDefault(mapItem map[interface{}]interface{}, key interface{}, defaultValue float64)(res float64){
+	value := GetValueWithDefault(mapItem, key, defaultValue)
+	if data, ok := value.(float64); ok {
 		return data
 	}
 	return defaultValue

@@ -5,6 +5,6 @@ package common
 
 // FunctionResult save the result of process with function res.
 type FunctionResult struct {
-	Value float32
+	Value float64
 	Tags  map[string]string
 }

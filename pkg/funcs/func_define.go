@@ -40,16 +40,18 @@ type BaseFuncInterface interface {
 	//key-functions.
 	Keys() map[string]BaseFuncInterface
 
+	KeyMap() map[string]struct{}
+
 	// Call return the res of specify key value. But if function has more keys, it will set same key to call. If
 	//function want call by different key value, use CallWithValue to get res.
-	Call(float32) (float32, error)
+	Call(float642 float64) (float64, error)
 }
 
 type BaseFunc struct {
 	keyFunctions map[string]BaseFuncInterface
 }
 
-func (bf *BaseFunc) SetConstantValue(key string, value float32) {
+func (bf *BaseFunc) SetConstantValue(key string, value float64) {
 	bf.SetKeyFunc(key, (&ConstantValueFunction{}).InitP(map[interface{}]interface{}{ValueStr: value}))
 }
 
@@ -69,7 +71,7 @@ func (bf BaseFunc) Keys() map[string]BaseFuncInterface {
 	return bf.keyFunctions
 }
 
-func (bf *BaseFunc) DoFuncWithDefaultValue(key string, param float32, defaultValue float32) (float32, error) {
+func (bf *BaseFunc) DoFuncWithDefaultValue(key string, param float64, defaultValue float64) (float64, error) {
 	if funcItem, ok := bf.keyFunctions[key]; ok {
 		return funcItem.Call(param)
 	}
@@ -96,14 +98,18 @@ func (bf *BaseFunc) KeyExpressionMap() map[string]string {
 
 // ======== constant value function
 
-func GenConstantValueFunc(value float32) BaseFuncInterface {
+func GenConstantValueFunc(value float64) BaseFuncInterface {
 	return (&ConstantValueFunction{}).InitP(map[interface{}]interface{}{ValueStr: value})
 }
 
 // ConstantValueFunction always return a constant value from init-func.
 type ConstantValueFunction struct {
 	BaseFunc
-	value float32
+	value float64
+}
+
+func (b ConstantValueFunction)KeyMap()map[string]struct{}{
+	return map[string]struct{}{}
 }
 
 func (b ConstantValueFunction) Type() TypeStr {
@@ -112,13 +118,13 @@ func (b ConstantValueFunction) Type() TypeStr {
 
 // Expression return value directly.
 func (b ConstantValueFunction) Expression() string {
-	return strconv.FormatFloat(float64(b.value), 'f', -1, 32)
+	return strconv.FormatFloat(b.value, 'f', -1, 64)
 }
 
 // Init a ConstantValueFunction with value, it can be call more than one time. It will change value.
-// Need param: ValueStr(float32)
+// Need param: ValueStr(float64)
 func (b *ConstantValueFunction) Init(m map[interface{}]interface{}) {
-	b.value = utils.GetFloat32WithDefault(m, ValueStr, 0)
+	b.value = utils.GetFloat64WithDefault(m, ValueStr, 0)
 }
 
 func (b *ConstantValueFunction) InitP(m map[interface{}]interface{}) BaseFuncInterface {
@@ -138,7 +144,7 @@ func (b ConstantValueFunction) Keys() map[string]BaseFuncInterface {
 }
 
 // Call return value directly
-func (b ConstantValueFunction) Call(f float32) (float32, error) {
+func (b ConstantValueFunction) Call(f float64) (float64, error) {
 	return b.value, nil
 }
 
@@ -146,6 +152,10 @@ func (b ConstantValueFunction) Call(f float32) (float32, error) {
 
 // MetadataUnitFunction is the base function of key
 type MetadataUnitFunction struct {
+}
+
+func (m MetadataUnitFunction)KeyMap()map[string]struct{}{
+	return map[string]struct{}{}
 }
 
 func (m MetadataUnitFunction) Type() TypeStr {
@@ -173,9 +183,10 @@ func (m MetadataUnitFunction) Keys() map[string]BaseFuncInterface {
 	return map[string]BaseFuncInterface{}
 }
 
-func (m MetadataUnitFunction) Call(f float32) (float32, error) {
+func (m MetadataUnitFunction) Call(f float64) (float64, error) {
 	return f, nil
 }
+
 
 // ======== the same params
 const (

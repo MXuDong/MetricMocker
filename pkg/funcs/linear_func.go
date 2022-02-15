@@ -16,9 +16,15 @@ type BaseLinearFunction struct {
 
 	paramsMap map[string]interface{}
 
-	slope   float32
-	offsetX float32
-	offsetY float32
+	slope   float64
+	offsetX float64
+	offsetY float64
+}
+
+func (b BaseLinearFunction) KeyMap()map[string]struct{}{
+	return map[string]struct{}{
+		UnknownKey: {},
+	}
 }
 
 func (b BaseLinearFunction) Expression() string {
@@ -30,9 +36,9 @@ func (b BaseLinearFunction) Expression() string {
 }
 
 func (b *BaseLinearFunction) Init(m map[interface{}]interface{}) {
-	b.slope = utils.GetFloat32WithDefault(m, SlopeStr, 1)
-	b.offsetX = utils.GetFloat32WithDefault(m, OffsetXStr, 0)
-	b.offsetY = utils.GetFloat32WithDefault(m, OffsetYStr, 0)
+	b.slope = utils.GetFloat64WithDefault(m, SlopeStr, 1)
+	b.offsetX = utils.GetFloat64WithDefault(m, OffsetXStr, 0)
+	b.offsetY = utils.GetFloat64WithDefault(m, OffsetYStr, 0)
 	b.paramsMap = map[string]interface{}{
 		SlopeStr:   b.slope,
 		OffsetXStr: b.offsetX,
@@ -46,7 +52,7 @@ func (b BaseLinearFunction) Params() map[string]interface{} {
 	return b.paramsMap
 }
 
-func (b BaseLinearFunction) Call(f float32) (float32, error) {
+func (b BaseLinearFunction) Call(f float64) (float64, error) {
 	x, err := b.Keys()[UnknownKey].Call(f)
 	if err != nil {
 		return 0, err
@@ -55,6 +61,6 @@ func (b BaseLinearFunction) Call(f float32) (float32, error) {
 	return b.slope*(b.offsetX+x) + b.offsetY, nil
 }
 
-func (b BaseLinearFunction)Type()TypeStr{
-	return "BaseLinearFunction"
+func (b BaseLinearFunction) Type() TypeStr {
+	return BaseLinearFunctionType
 }
