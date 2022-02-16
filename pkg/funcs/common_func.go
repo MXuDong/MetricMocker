@@ -9,7 +9,7 @@ type StartZeroFunc struct {
 	startTime float64
 }
 
-func (s StartZeroFunc)KeyMap()map[string]struct{}{
+func (s StartZeroFunc) KeyMap() map[string]struct{} {
 	return map[string]struct{}{
 		UnknownKey: {},
 	}
@@ -23,7 +23,7 @@ func (s StartZeroFunc) Expression() string {
 	return "x(0->)"
 }
 
-func (s *StartZeroFunc) Init(m map[interface{}]interface{}) {
+func (s *StartZeroFunc) Init(m map[string]interface{}) {
 	// do nothing
 	s.startTime = -1
 

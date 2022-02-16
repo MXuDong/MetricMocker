@@ -25,7 +25,7 @@ type BaseFuncInterface interface {
 	Expression() string
 
 	// Init set the params of function, and all the function can set default value if some symbol not provide.
-	Init(map[interface{}]interface{})
+	Init(map[string]interface{})
 
 	// SetKeyFunc will set the key function. All the key func will calculate first. The sample level of key-function
 	//will be seen as same key. If expression is y=x1+x2, the x1 and x2 is different key. But when set key-function
@@ -52,7 +52,7 @@ type BaseFunc struct {
 }
 
 func (bf *BaseFunc) SetConstantValue(key string, value float64) {
-	bf.SetKeyFunc(key, (&ConstantValueFunction{}).InitP(map[interface{}]interface{}{ValueStr: value}))
+	bf.SetKeyFunc(key, (&ConstantValueFunction{}).InitP(map[string]interface{}{ValueStr: value}))
 }
 
 func (bf *BaseFunc) SetKeyFunc(key string, bFunc BaseFuncInterface) {
@@ -99,7 +99,7 @@ func (bf *BaseFunc) KeyExpressionMap() map[string]string {
 // ======== constant value function
 
 func GenConstantValueFunc(value float64) BaseFuncInterface {
-	return (&ConstantValueFunction{}).InitP(map[interface{}]interface{}{ValueStr: value})
+	return (&ConstantValueFunction{}).InitP(map[string]interface{}{ValueStr: value})
 }
 
 // ConstantValueFunction always return a constant value from init-func.
@@ -123,11 +123,11 @@ func (b ConstantValueFunction) Expression() string {
 
 // Init a ConstantValueFunction with value, it can be call more than one time. It will change value.
 // Need param: ValueStr(float64)
-func (b *ConstantValueFunction) Init(m map[interface{}]interface{}) {
+func (b *ConstantValueFunction) Init(m map[string]interface{}) {
 	b.value = utils.GetFloat64WithDefault(m, ValueStr, 0)
 }
 
-func (b *ConstantValueFunction) InitP(m map[interface{}]interface{}) BaseFuncInterface {
+func (b *ConstantValueFunction) InitP(m map[string]interface{}) BaseFuncInterface {
 	b.Init(m)
 	return b
 }
@@ -166,7 +166,7 @@ func (m MetadataUnitFunction) Expression() string {
 	return UnknownKey
 }
 
-func (m MetadataUnitFunction) Init(m2 map[interface{}]interface{}) {
+func (m MetadataUnitFunction) Init(m2 map[string]interface{}) {
 
 	// the MetadataUnitFunction has no params
 }

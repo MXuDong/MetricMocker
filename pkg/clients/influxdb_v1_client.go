@@ -20,7 +20,7 @@ const (
 	InfluxDBV1ClientType = "InfluxDBV1"
 )
 
-func (i *InfluxdbV1Client) Init(param map[interface{}]interface{}) {
+func (i *InfluxdbV1Client) Init(param map[string]interface{}) {
 
 	url := utils.GetStringWithDefault(param, InfluxDBServerURLKey, "")
 	if len(url) == 0{
@@ -33,7 +33,7 @@ func (i *InfluxdbV1Client) Init(param map[interface{}]interface{}) {
 	i.client = influxdb2.NewClient(url, "")
 }
 
-func (i *InfluxdbV1Client) InitP(param map[interface{}]interface{}) BaseClientInterface {
+func (i *InfluxdbV1Client) InitP(param map[string]interface{}) BaseClientInterface {
 	i.Init(param)
 	return i
 }

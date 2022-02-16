@@ -12,22 +12,23 @@ import (
 type FunctionName string
 
 type Processor struct {
-	Name string `yaml:"Name"`
+	Name   string `yaml:"Name" json:"Name"`
+	Holder string `yaml:"Holder" json:"Holder"` // which client run it.
 
-	Tags map[string]string `yaml:"Tags"`
+	Tags map[string]string `yaml:"Tags" json:"Tags"`
 
-	FunctionParamsList []funcs.FunctionParams `yaml:"FunctionParamsList"`
+	FunctionParamsList []funcs.FunctionParams `yaml:"FunctionParamsList" json:"FunctionParamsList"`
 
-	Functions    map[FunctionName]funcs.BaseFuncInterface `yaml:"Functions"`
-	FunctionTags map[FunctionName]map[string]string       `yaml:"FunctionTags"`
+	Functions    map[FunctionName]funcs.BaseFuncInterface `yaml:"Functions" json:"Functions"`
+	FunctionTags map[FunctionName]map[string]string       `yaml:"FunctionTags" json:"FunctionTags"`
 
-	// IgnoreFunctionTag is a boolean value, if true, ignore the function param, but keep name and type tag.
-	IgnoreFunctionTag bool `yaml:"IgnoreFunctionTag"`
+	// IgnoreFunctionParamTag is a boolean value, if true, ignore the function param, but keep name and type tag.
+	IgnoreFunctionParamTag bool `yaml:"IgnoreFunctionParamTag" json:"IgnoreFunctionParamTag"`
 
-	Clients []string `yaml:"Clients"`
+	Clients []string `yaml:"Clients" json:"Clients"`
 
 	ClientInstances []clients.BaseClientInterface
-	CronStr         string `yaml:"CronStr"`
+	CronStr         string `yaml:"CronStr" json:"CronStr"`
 }
 
 func (p *Processor) Load() {
@@ -53,7 +54,7 @@ func (p *Processor) Load() {
 		p.FunctionTags[FunctionName(name)]["function_name"] = name
 		p.FunctionTags[FunctionName(name)]["function_type"] = string(funcParamItem.Type)
 
-		if !p.IgnoreFunctionTag {
+		if !p.IgnoreFunctionParamTag {
 			params := p.Functions[FunctionName(name)].Params()
 			for key, value := range params {
 				keyStr := fmt.Sprintf("%v", key)

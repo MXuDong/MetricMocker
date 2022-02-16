@@ -10,7 +10,7 @@ type StdoutClient struct {
 	keys map[string]map[string]common.FunctionResult
 }
 
-func (s *StdoutClient) Init(param map[interface{}]interface{}) {
+func (s *StdoutClient) Init(param map[string]interface{}) {
 	cronInstance := cron.New()
 	cronInstance.Start()
 
@@ -34,7 +34,7 @@ func (s *StdoutClient) Init(param map[interface{}]interface{}) {
 
 }
 
-func (s *StdoutClient) InitP(param map[interface{}]interface{}) BaseClientInterface {
+func (s *StdoutClient) InitP(param map[string]interface{}) BaseClientInterface {
 	s.Init(param)
 	return s
 }

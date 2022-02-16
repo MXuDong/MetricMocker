@@ -28,7 +28,7 @@ func IsMapSame(m1, m2 map[string]string) bool {
 
 // GetValueWithDefault return specify value from map. If specify value not found, return default value.
 // But if specify value is empty value(can be found), it will return empty value.
-func GetValueWithDefault(mapItem map[interface{}]interface{}, key interface{}, defaultValue interface{}) interface{} {
+func GetValueWithDefault(mapItem map[string]interface{}, key string, defaultValue interface{}) interface{} {
 	if mapItem == nil {
 		return defaultValue
 	}
@@ -41,7 +41,7 @@ func GetValueWithDefault(mapItem map[interface{}]interface{}, key interface{}, d
 
 // GetStringWithDefault return string value from mapItem. If value not found, or can't convert to string. Return
 // defaultValue.
-func GetStringWithDefault(mapItem map[interface{}]interface{}, key interface{}, defaultValue string) string {
+func GetStringWithDefault(mapItem map[string]interface{}, key string, defaultValue string) string {
 	value := GetValueWithDefault(mapItem, key, defaultValue)
 	if data, ok := value.(string); ok {
 		return data
@@ -53,7 +53,7 @@ func GetStringWithDefault(mapItem map[interface{}]interface{}, key interface{}, 
 
 // GetFloat32WithDefault return float32 value from mapItem. If value not found, or can't convert to float32. Return
 // defaultValue.
-func GetFloat32WithDefault(mapItem map[interface{}]interface{}, key interface{}, defaultValue float32) (res float32) {
+func GetFloat32WithDefault(mapItem map[string]interface{}, key string, defaultValue float32) (res float32) {
 	value := GetValueWithDefault(mapItem, key, defaultValue)
 	if data, ok := value.(float32); ok {
 		return data
@@ -61,8 +61,7 @@ func GetFloat32WithDefault(mapItem map[interface{}]interface{}, key interface{},
 	return defaultValue
 }
 
-
-func GetFloat64WithDefault(mapItem map[interface{}]interface{}, key interface{}, defaultValue float64)(res float64){
+func GetFloat64WithDefault(mapItem map[string]interface{}, key string, defaultValue float64) (res float64) {
 	value := GetValueWithDefault(mapItem, key, defaultValue)
 	if data, ok := value.(float64); ok {
 		return data

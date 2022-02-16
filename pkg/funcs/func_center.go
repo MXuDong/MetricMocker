@@ -1,10 +1,10 @@
 package funcs
 
 type FunctionParams struct {
-	Type TypeStr `yaml:"Type"`
-	Name string `yaml:"Name"`
-	Params map[interface{}]interface{} `yaml:"Params"`
-	KeyFunctions map[string]FunctionParams `yaml:"KeyFunctions"`
+	Type         TypeStr                   `yaml:"Type" json:"Type"`
+	Name         string                    `yaml:"Name" json:"Name"`
+	Params       map[string]interface{}    `yaml:"Params" json:"Params"`
+	KeyFunctions map[string]FunctionParams `yaml:"KeyFunctions" json:"KeyFunctions"`
 }
 
 func Function(param FunctionParams) BaseFuncInterface {
@@ -12,14 +12,13 @@ func Function(param FunctionParams) BaseFuncInterface {
 	functionKeyFunctions := map[string]BaseFuncInterface{}
 	var funcItem BaseFuncInterface
 
-	if param.KeyFunctions != nil{
+	if param.KeyFunctions != nil {
 		for key, funcParams := range param.KeyFunctions {
 			functionKeyFunctions[key] = Function(funcParams)
 		}
 	}
 
-
-	switch param.Type{
+	switch param.Type {
 	case "MetadataUnitFunction":
 		funcItem = &MetadataUnitFunction{}
 	case BaseLinearFunctionType:
@@ -28,13 +27,13 @@ func Function(param FunctionParams) BaseFuncInterface {
 		funcItem = &StartZeroFunc{}
 	}
 
-	if funcItem == nil{
+	if funcItem == nil {
 		return nil
 	}
 
 	funcItem.Init(param.Params)
 
-	for key, _ := range funcItem.KeyMap(){
+	for key, _ := range funcItem.KeyMap() {
 		// use MetadataUnitFunction as default function.
 		funcItem.SetKeyFunc(key, &MetadataUnitFunction{})
 	}

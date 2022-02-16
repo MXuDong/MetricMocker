@@ -35,7 +35,7 @@ func (b BaseLinearFunction) Expression() string {
 	return fmt.Sprintf("%v*(%v+%v)+%v", b.paramsMap[SlopeStr], keyExpressionMap[UnknownKey], b.paramsMap[OffsetXStr], b.paramsMap[OffsetYStr])
 }
 
-func (b *BaseLinearFunction) Init(m map[interface{}]interface{}) {
+func (b *BaseLinearFunction) Init(m map[string]interface{}) {
 	b.slope = utils.GetFloat64WithDefault(m, SlopeStr, 1)
 	b.offsetX = utils.GetFloat64WithDefault(m, OffsetXStr, 0)
 	b.offsetY = utils.GetFloat64WithDefault(m, OffsetYStr, 0)

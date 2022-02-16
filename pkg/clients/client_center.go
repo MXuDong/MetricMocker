@@ -1,6 +1,6 @@
 package clients
 
-func Client(name, typ string, param map[interface{}]interface{}) BaseClientInterface {
+func Client(name, typ string, param map[string]interface{}) BaseClientInterface {
 	var res BaseClientInterface
 	if res = checkoutClient(name); res != nil {
 		return res
