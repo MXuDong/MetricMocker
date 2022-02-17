@@ -19,7 +19,7 @@ type Processor struct {
 
 	FunctionParamsList []funcs.FunctionParams `yaml:"FunctionParamsList" json:"FunctionParamsList"`
 
-	Functions    map[FunctionName]funcs.BaseFuncInterface `yaml:"Functions" json:"Functions"`
+	Functions    map[FunctionName]funcs.BaseFuncInterface `yaml:"Functions" json:"-"` // load by processor
 	FunctionTags map[FunctionName]map[string]string       `yaml:"FunctionTags" json:"FunctionTags"`
 
 	// IgnoreFunctionParamTag is a boolean value, if true, ignore the function param, but keep name and type tag.
@@ -27,8 +27,8 @@ type Processor struct {
 
 	Clients []string `yaml:"Clients" json:"Clients"`
 
-	ClientInstances []clients.BaseClientInterface
-	CronStr         string `yaml:"CronStr" json:"CronStr"`
+	ClientInstances []clients.BaseClientInterface `json:"-"` // load by processor
+	CronStr         string                        `yaml:"CronStr" json:"CronStr"`
 }
 
 func (p *Processor) Load() {

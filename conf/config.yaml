@@ -1,24 +1,24 @@
-#Processors:
-#  - Name: test-p
-#    Tags:
-#      v1: test1
-#    FunctionParamsList:
+Processors:
+  - Name: test-p
+    Tags:
+      v1: test1
+    FunctionParamsList:
 #      - Type: BaseLinearFunction
 #        Name: Test1
-#      - Type: BaseLinearFunction
-#        Name: Test2
-#        Params:
-#          slope: 2.0
-#        KeyFunctions:
-#          x:
-#            type: StartZeroFuncType
-#            name: Start-Zero-func
+      - Type: BaseLinearFunction
+        Name: Test2
+        Params:
+          slope: 2.0
+        KeyFunctions:
+          x:
+            type: StartZeroFuncType
+            name: Start-Zero-func
 #      - Type: StartZeroFuncType
 #        Name: Start-Zero-func
-#    CronStr: "@every 1s"
-#    Clients:
-#      - debug_client
-##      - influx-test-client
+    CronStr: "@every 1s"
+    Clients:
+      - debug_client
+#      - influx-test-client
 Clients:
   - name: debug_client
     type: StdoutClient
@@ -32,8 +32,9 @@ Clients:
 #      Table: test2
 Application:
   ticker: 5
+  port: ":3001"
   nodeId: local
   objectMockerConfig:
-    enable: true
+    enable: false
     host: "http://127.0.0.1:3000"
     syncInterval: "@every 5s"

@@ -7,6 +7,12 @@ type FunctionParams struct {
 	KeyFunctions map[string]FunctionParams `yaml:"KeyFunctions" json:"KeyFunctions"`
 }
 
+var FuncMap map[TypeStr]func() BaseFuncInterface = map[TypeStr]func() BaseFuncInterface{
+	"MetadataUnitFunction": func() BaseFuncInterface { return &MetadataUnitFunction{} },
+	BaseLinearFunctionType: func() BaseFuncInterface { return &BaseLinearFunction{} },
+	StartZeroFuncType:      func() BaseFuncInterface { return &StartZeroFunc{} },
+}
+
 func Function(param FunctionParams) BaseFuncInterface {
 
 	functionKeyFunctions := map[string]BaseFuncInterface{}
@@ -17,21 +23,17 @@ func Function(param FunctionParams) BaseFuncInterface {
 			functionKeyFunctions[key] = Function(funcParams)
 		}
 	}
-
-	switch param.Type {
-	case "MetadataUnitFunction":
-		funcItem = &MetadataUnitFunction{}
-	case BaseLinearFunctionType:
-		funcItem = &BaseLinearFunction{}
-	case StartZeroFuncType:
-		funcItem = &StartZeroFunc{}
+	if funcItemInitFunc, ok := FuncMap[param.Type]; !ok {
+		return nil
+	} else {
+		funcItem = InitFunction(funcItemInitFunc(), param.Params)
 	}
 
 	if funcItem == nil {
 		return nil
 	}
 
-	funcItem.Init(param.Params)
+	//funcItem.Init(param.Params)
 
 	for key, _ := range funcItem.KeyMap() {
 		// use MetadataUnitFunction as default function.
@@ -41,6 +43,5 @@ func Function(param FunctionParams) BaseFuncInterface {
 	for key, keyFunction := range functionKeyFunctions {
 		funcItem.SetKeyFunc(key, keyFunction)
 	}
-
 	return funcItem
 }

@@ -6,6 +6,7 @@ import (
 	"github.com/robfig/cron/v3"
 	"github.com/spf13/viper"
 	"mmocker/conf"
+	"mmocker/internal/web"
 	"mmocker/om"
 	"mmocker/pkg/clients"
 	"mmocker/pkg/proc"
@@ -13,7 +14,6 @@ import (
 	"mmocker/utils/log"
 	"os"
 	"syscall"
-	"time"
 )
 
 func init() {
@@ -61,10 +61,7 @@ func main() {
 		proc.AddProcessors(&item)
 	}
 
-	for true {
-		// keep run
-		time.Sleep(5 * time.Second)
-	}
+	web.Run()
 }
 
 func InitConf() *conf.Configs {

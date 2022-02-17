@@ -6,7 +6,7 @@ const (
 
 type StartZeroFunc struct {
 	BaseFunc
-	startTime float64
+	StartTime float64 `key:"StartValue"`
 }
 
 func (s StartZeroFunc) KeyMap() map[string]struct{} {
@@ -23,9 +23,9 @@ func (s StartZeroFunc) Expression() string {
 	return "x(0->)"
 }
 
-func (s *StartZeroFunc) Init(m map[string]interface{}) {
+func (s *StartZeroFunc) Init() {
 	// do nothing
-	s.startTime = -1
+	s.StartTime = -1
 
 	s.SetKeyFunc(UnknownKey, MetadataUnitFunction{})
 }
@@ -39,8 +39,8 @@ func (s *StartZeroFunc) Call(f float64) (float64, error) {
 	if err != nil {
 		return 0, err
 	}
-	if s.startTime == -1 {
-		s.startTime = x
+	if s.StartTime == -1 {
+		s.StartTime = x
 	}
-	return x - s.startTime, nil
+	return x - s.StartTime, nil
 }

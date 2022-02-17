@@ -2,54 +2,51 @@ package funcs
 
 import (
 	"fmt"
-	"mmocker/utils"
 )
 
 const (
 	BaseLinearFunctionType = "BaseLinearFunction"
 )
 
-// BaseLinearFunction y = slope * (x + offsetX) + offsetY
+// BaseLinearFunction y = Slope * (x + OffsetX) + OffsetY
 type BaseLinearFunction struct {
 	BaseFunc
-	baseExpression string
+	BaseExpression string `expression:"y = Slope * (x + OffsetX) + OffsetY"`
 
-	paramsMap map[string]interface{}
+	params map[string]interface{}
 
-	slope   float64
-	offsetX float64
-	offsetY float64
+	Slope   float64 `mean:"the slope of line" minValue:"-" maxValue:"-" key:"slope"`
+	OffsetX float64 `mean:"offset of x" minValue:"-" maxValue:"-" key:"offsetX"`
+	OffsetY float64 `mean:"offset of y" minValue:"-" maxValue:"-" key:"offsetY"`
 }
 
-func (b BaseLinearFunction) KeyMap()map[string]struct{}{
+func (b BaseLinearFunction) KeyMap() map[string]struct{} {
 	return map[string]struct{}{
 		UnknownKey: {},
 	}
 }
 
-func (b BaseLinearFunction) Expression() string {
-	keyExpressionMap := map[string]string{}
-	if b.HasKeyFunctions() {
-		keyExpressionMap = b.BaseFunc.KeyExpressionMap()
+func (b *BaseLinearFunction) Expression() string {
+	if len(b.BaseExpression) == 0 {
+		keyExpressionMap := map[string]string{}
+		if b.HasKeyFunctions() {
+			keyExpressionMap = b.BaseFunc.KeyExpressionMap()
+		}
+		b.BaseExpression = fmt.Sprintf("%v*(%v+%v)+%v", b.Slope, keyExpressionMap[UnknownKey], b.OffsetX, b.OffsetY)
 	}
-	return fmt.Sprintf("%v*(%v+%v)+%v", b.paramsMap[SlopeStr], keyExpressionMap[UnknownKey], b.paramsMap[OffsetXStr], b.paramsMap[OffsetYStr])
+
+	return b.BaseExpression
 }
 
-func (b *BaseLinearFunction) Init(m map[string]interface{}) {
-	b.slope = utils.GetFloat64WithDefault(m, SlopeStr, 1)
-	b.offsetX = utils.GetFloat64WithDefault(m, OffsetXStr, 0)
-	b.offsetY = utils.GetFloat64WithDefault(m, OffsetYStr, 0)
-	b.paramsMap = map[string]interface{}{
-		SlopeStr:   b.slope,
-		OffsetXStr: b.offsetX,
-		OffsetYStr: b.offsetY,
-	}
-
+func (b *BaseLinearFunction) Init() {
 	b.SetKeyFunc(UnknownKey, MetadataUnitFunction{})
 }
 
-func (b BaseLinearFunction) Params() map[string]interface{} {
-	return b.paramsMap
+func (b *BaseLinearFunction) Params() map[string]interface{} {
+	if b.params == nil {
+		b.params = GetParamMap(b)
+	}
+	return b.params
 }
 
 func (b BaseLinearFunction) Call(f float64) (float64, error) {
@@ -58,7 +55,7 @@ func (b BaseLinearFunction) Call(f float64) (float64, error) {
 		return 0, err
 	}
 
-	return b.slope*(b.offsetX+x) + b.offsetY, nil
+	return b.Slope*(b.OffsetX+x) + b.OffsetY, nil
 }
 
 func (b BaseLinearFunction) Type() TypeStr {

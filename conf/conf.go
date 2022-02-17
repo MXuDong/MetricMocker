@@ -20,6 +20,7 @@ type Application struct {
 	Ticker             int                 `yaml:"ticker" json:"ticker"`
 	NodeId             string              `yaml:"nodeId"` // Bind with the environment. If empty, set local directly.
 	ObjectMockerConfig *ObjectMockerConfig `yaml:"objectMockerConfig"`
+	Port               string              `yaml:"port"`
 }
 
 type ObjectMockerConfig struct {
