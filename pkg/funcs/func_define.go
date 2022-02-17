@@ -2,7 +2,6 @@ package funcs
 
 import (
 	"reflect"
-	"strconv"
 )
 
 type TypeStr string
@@ -28,6 +27,9 @@ type BaseFuncInterface interface {
 	// Init will be invoked later than set param. The init operator should not update param. Some time when function
 	// need reInit should invoke it. In others words, invoke it mean function should re-start work when next call.
 	Init()
+
+	// Doc should return the function describe. Such like usage, params values. More times, it will show on html page.
+	Doc() string
 
 	// SetKeyFunc will set the key function. All the key func will calculate first. The sample level of key-function
 	//will be seen as same key. If expression is y=x1+x2, the x1 and x2 is different key. But when set key-function
@@ -98,99 +100,7 @@ func (bf *BaseFunc) KeyExpressionMap() map[string]string {
 	return res
 }
 
-// ======== constant value function
-
-func GenConstantValueFunc(value float64) BaseFuncInterface {
-	return InitFunction(&ConstantValueFunction{}, map[string]interface{}{"Value": value})
-}
-
-// ConstantValueFunction always return a constant value from init-func.
-type ConstantValueFunction struct {
-	BaseFunc
-	Value float64 `key:"Value"`
-}
-
-func (b ConstantValueFunction) KeyMap() map[string]struct{} {
-	return map[string]struct{}{}
-}
-
-func (b ConstantValueFunction) Type() TypeStr {
-	return "ConstantValueFunction"
-}
-
-// Expression return value directly.
-func (b ConstantValueFunction) Expression() string {
-	return strconv.FormatFloat(b.Value, 'f', -1, 64)
-}
-
-// Init a ConstantValueFunction with value, it can be call more than one time. It will change value.
-// Need param: ValueStr(float64)
-func (b *ConstantValueFunction) Init() {
-}
-
-func (b *ConstantValueFunction) InitP() BaseFuncInterface {
-	b.Init()
-	return b
-}
-
-// Params return value directly.
-func (b ConstantValueFunction) Params() map[string]interface{} {
-	return map[string]interface{}{
-		ValueStr: b.Value,
-	}
-}
-
-func (b ConstantValueFunction) Keys() map[string]BaseFuncInterface {
-	return map[string]BaseFuncInterface{}
-}
-
-// Call return value directly
-func (b ConstantValueFunction) Call(f float64) (float64, error) {
-	return b.Value, nil
-}
-
 // ================ base metadata unit function
-
-// MetadataUnitFunction is the base function of key
-type MetadataUnitFunction struct {
-}
-
-func (m MetadataUnitFunction) KeyMap() map[string]struct{} {
-	return map[string]struct{}{}
-}
-
-func (m MetadataUnitFunction) Type() TypeStr {
-	return "MetadataUnitFunction"
-}
-
-func (m MetadataUnitFunction) Expression() string {
-	return UnknownKey
-}
-
-func (m MetadataUnitFunction) Init() {
-
-	// the MetadataUnitFunction has no params
-}
-func (m *MetadataUnitFunction) InitP() BaseFuncInterface {
-	m.Init()
-	return m
-}
-
-func (m MetadataUnitFunction) SetKeyFunc(key string, bFunc BaseFuncInterface) {
-	// the metadata unit function has no key
-}
-
-func (m MetadataUnitFunction) Params() map[string]interface{} {
-	return map[string]interface{}{}
-}
-
-func (m MetadataUnitFunction) Keys() map[string]BaseFuncInterface {
-	return map[string]BaseFuncInterface{}
-}
-
-func (m MetadataUnitFunction) Call(f float64) (float64, error) {
-	return f, nil
-}
 
 // InitFunction will init a function, use reflect. In the end of IniFunction, it will invoke BaseFuncInterface.Init()
 func InitFunction(funcItem BaseFuncInterface, params map[string]interface{}) BaseFuncInterface {
@@ -265,13 +175,62 @@ func GetParamMap(funcInterface BaseFuncInterface) map[string]interface{} {
 }
 
 func GetParamKey(fs reflect.StructField) (string, bool) {
-	if keyName, ok := fs.Tag.Lookup(ParamKey); ok {
+	if keyName, ok := fs.Tag.Lookup(ParamKeyKey); ok {
 		if len(keyName) == 0 {
 			return fs.Name, ok
 		}
 		return keyName, ok
 	}
 	return "", false
+}
+
+func GetParamFields(funcInterface BaseFuncInterface) map[string]FieldDescribe {
+	if funcInterface == nil {
+		return map[string]FieldDescribe{}
+	}
+
+	typ := reflect.TypeOf(funcInterface).Elem()
+	res := map[string]FieldDescribe{}
+
+	for fieldIndex := 0; fieldIndex < typ.NumField(); fieldIndex++ {
+		fieldItem := typ.Field(fieldIndex)
+
+		if keyName, ok := GetParamKey(fieldItem); ok {
+			meanValue := fieldItem.Tag.Get(ParamMeanKey)
+			fieldDescribe := FieldDescribe{
+				KeyName: keyName,
+				Mean:    meanValue,
+			}
+			res[keyName] = fieldDescribe
+		}
+	}
+
+	return res
+}
+
+func GetExpression(funcInterface BaseFuncInterface) string {
+	if funcInterface == nil {
+		return ""
+	}
+
+	typ := reflect.TypeOf(funcInterface).Elem()
+	expression := ""
+
+	for fieldIndex := 0; fieldIndex < typ.NumField(); fieldIndex++ {
+		fieldItem := typ.Field(fieldIndex)
+		if value, ok := fieldItem.Tag.Lookup(ExpressionKey); ok {
+			if len(expression) != 0 {
+				expression += "|"
+			}
+			expression += value
+		}
+	}
+
+	if len(expression) == 0 {
+		expression = "y=" + funcInterface.Expression()
+	}
+
+	return expression
 }
 
 // ======== the same params
@@ -283,8 +242,18 @@ const (
 	OffsetYStr = "offset_y"
 	ValueStr   = "value"
 
-	ParamKey = "key" // all func param should have this tag, if empty of value, use filed name as key.
+	ParamKeyKey   = "key"        // all func param should have this tag, if empty of value, use filed name as key.
+	ParamMeanKey  = "mean"       // the param usage.
+	ExpressionKey = "expression" // the function expression. If has no expression, invoke BaseFuncInterface.Expression()
 )
+
+// field properties
+
+// FieldDescribe contain the key tags.
+type FieldDescribe struct {
+	KeyName string
+	Mean    string
+}
 
 // TODO: Complate
 type CalculateError struct {

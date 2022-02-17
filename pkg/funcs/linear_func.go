@@ -11,13 +11,19 @@ const (
 // BaseLinearFunction y = Slope * (x + OffsetX) + OffsetY
 type BaseLinearFunction struct {
 	BaseFunc
-	BaseExpression string `expression:"y = Slope * (x + OffsetX) + OffsetY"`
+	BaseExpression string `expression:"y=Slope*(x+OffsetX)+OffsetY"`
 
 	params map[string]interface{}
 
-	Slope   float64 `mean:"the slope of line" minValue:"-" maxValue:"-" key:"slope"`
-	OffsetX float64 `mean:"offset of x" minValue:"-" maxValue:"-" key:"offsetX"`
-	OffsetY float64 `mean:"offset of y" minValue:"-" maxValue:"-" key:"offsetY"`
+	Slope   float64 `mean:"slope of line" key:"slope"`
+	OffsetX float64 `mean:"offset of x" key:"offsetX"`
+	OffsetY float64 `mean:"offset of y" key:"offsetY"`
+}
+
+func (b BaseLinearFunction) Doc() string {
+	return `
+BaseLinearFunction is a simple one dimensional function.
+`
 }
 
 func (b BaseLinearFunction) KeyMap() map[string]struct{} {

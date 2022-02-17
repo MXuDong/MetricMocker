@@ -12,6 +12,7 @@ func Run() {
 	r.GET("/processors", handler.ListProcessor)
 
 	r.GET("/functions", handler.ListAllFunction)
+	r.GET("/function/:func", handler.GetFuncDescribe)
 
 	// get conf.ApplicationConfig
 	r.GET("/application-config", handler.GetConfig)
