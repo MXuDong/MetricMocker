@@ -57,6 +57,10 @@ const MetadataUnitFunctionType = "MetadataUnitFunction"
 type MetadataUnitFunction struct {
 }
 
+func (m MetadataUnitFunction) SetType(str TypeStr){
+	// do nothing
+}
+
 // IsDerived always return false, because the MetadataUnitFunction has no derived function.
 func (m MetadataUnitFunction) IsDerived() bool {
 	return false

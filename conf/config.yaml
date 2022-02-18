@@ -11,7 +11,7 @@ Processors:
           slope: 2.0
         KeyFunctions:
           x:
-            type: ModularFunctionType
+            type: ReverseSingleLinearFunction
             Params:
               modular_unit: 10.0
             KeyFunctions:
