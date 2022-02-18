@@ -31,19 +31,6 @@ func (m ModularFunction) Doc() string {
 ModularFunction is a modular function, to get the value % specify value.`
 }
 
-func (m *ModularFunction) Params() map[string]interface{} {
-	if m.params == nil {
-		m.params = GetParamMap(m)
-	}
-	return m.params
-}
-
-func (m ModularFunction) KeyMap() map[string]struct{} {
-	return map[string]struct{}{
-		UnknownKey: {},
-	}
-}
-
 func (m ModularFunction) Call(f float64) (float64, error) {
 	if m.ModularUnit == 0 {
 		return 0, ZeroValueError.Param("ModularFunction.modular_unit")
