@@ -1,5 +1,10 @@
 package utils
 
+import (
+	"mmocker/utils/log"
+	"reflect"
+)
+
 // IsMapSame return true when m1 == m2.
 // If both of them is nil, return true.
 // If one is nil, return false.
@@ -19,4 +24,47 @@ func IsMapSame(m1, m2 map[string]string) bool {
 	}
 
 	return true
+}
+
+// GetValueWithDefault return specify value from map. If specify value not found, return default value.
+// But if specify value is empty value(can be found), it will return empty value.
+func GetValueWithDefault(mapItem map[string]interface{}, key string, defaultValue interface{}) interface{} {
+	if mapItem == nil {
+		return defaultValue
+	}
+
+	if value, ok := mapItem[key]; ok {
+		return value
+	}
+	return defaultValue
+}
+
+// GetStringWithDefault return string value from mapItem. If value not found, or can't convert to string. Return
+// defaultValue.
+func GetStringWithDefault(mapItem map[string]interface{}, key string, defaultValue string) string {
+	value := GetValueWithDefault(mapItem, key, defaultValue)
+	if data, ok := value.(string); ok {
+		return data
+	} else {
+		log.Logger.Warnf("Convert to string error: %v.(%v) -> string", value, reflect.TypeOf(value))
+	}
+	return defaultValue
+}
+
+// GetFloat32WithDefault return float32 value from mapItem. If value not found, or can't convert to float32. Return
+// defaultValue.
+func GetFloat32WithDefault(mapItem map[string]interface{}, key string, defaultValue float32) (res float32) {
+	value := GetValueWithDefault(mapItem, key, defaultValue)
+	if data, ok := value.(float32); ok {
+		return data
+	}
+	return defaultValue
+}
+
+func GetFloat64WithDefault(mapItem map[string]interface{}, key string, defaultValue float64) (res float64) {
+	value := GetValueWithDefault(mapItem, key, defaultValue)
+	if data, ok := value.(float64); ok {
+		return data
+	}
+	return defaultValue
 }

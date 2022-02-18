@@ -3,12 +3,17 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/robfig/cron/v3"
 	"github.com/spf13/viper"
 	"mmocker/conf"
+	"mmocker/internal/web"
+	"mmocker/om"
 	"mmocker/pkg/clients"
+	"mmocker/pkg/proc"
+	"mmocker/utils"
 	"mmocker/utils/log"
 	"os"
-	"time"
+	"syscall"
 )
 
 func init() {
@@ -17,38 +22,50 @@ func init() {
 
 // main func bootstrap the metric-mocker
 func main() {
-	metrics := InitConf()
+	config := InitConf()
 
-	// init client
-	var cs []clients.Client
-	for _, clientItem := range metrics.Clients {
-		if c, err := clients.GetClient(clientItem.Name, clientItem.Type, clientItem.Params); err != nil {
-			panic(err)
-		} else {
-			cs = append(cs, c)
-		}
-	}
-	for _, p := range metrics.Processors {
-		_ = p.Load()
+	if conf.ApplicationConfig.ObjectMockerConfig.Enable {
+		om.Init() // init it
 
-		// register to client
-		for _, client := range p.ClientNames {
-			log.Logger.Infof("Register {%s} to {%s}", p.Name, client)
-			clientItem, err := clients.GetClient(client, "", map[string]interface{}{})
+		// init cron job
+		cronInstance := cron.New()
+		_, err := cronInstance.AddFunc(conf.ApplicationConfig.ObjectMockerConfig.SyncInterval, func() {
+			log.Logger.Infof("Sync from object-mocker by interval: %s", conf.ApplicationConfig.ObjectMockerConfig.SyncInterval)
+			processors, err := om.ListProcessor()
 			if err != nil {
-				continue
+				log.Logger.Errorf("%v", err)
 			}
-			clientItem.Register(p)
+
+			for _, procItem := range processors {
+				proc.AddProcessors(procItem)
+			}
+		})
+		cronInstance.Start()
+		if err != nil {
+			log.Logger.Error("%v", err)
 		}
 	}
-	dur := metrics.Application.Ticker
-	if dur < 1 {
-		dur = 5
+	for _, item := range config.Clients {
+		clients.Client(item.Name, item.Type, item.Params)
 	}
-	Start(cs, dur)
+
+	for _, item := range config.Processors {
+		if len(item.Holder) == 0 {
+			item.Holder = conf.ApplicationConfig.NodeId
+		}
+		if conf.ApplicationConfig.ObjectMockerConfig.Enable {
+			if _, err := om.RegisterProcessor(item); err != nil {
+				log.Logger.Error("%v", err)
+			}
+		}
+		proc.AddProcessors(&item)
+	}
+
+	web.Run()
 }
 
 func InitConf() *conf.Configs {
+	log.Logger.Trace("Init the config")
 	confPath := ""
 	flag.StringVar(&confPath, "c", "./conf/config.yaml", "-c config-path")
 	flag.Parse()
@@ -62,20 +79,28 @@ func InitConf() *conf.Configs {
 
 	c := &conf.Configs{}
 	viper.SetConfigFile(confPath)
-	_ = viper.ReadInConfig()
-	viper.Unmarshal(c)
-	return c
-}
-
-// Start will hold on the application, and use debug-out client
-func Start(cs []clients.Client, ticker int) {
-	log.Logger.Infof("Start the applications")
-	timeTickerChan := time.Tick(time.Duration(ticker) * time.Second)
-	for {
-		// keep main handler
-		for _, ci := range cs {
-			ci.Output()
-		}
-		<-timeTickerChan
+	if err := viper.ReadInConfig(); err != nil {
+		log.Logger.Error(err)
+		syscall.Exit(1)
 	}
+
+	if err := viper.Unmarshal(c); err != nil {
+		log.Logger.Error(err)
+		syscall.Exit(1)
+	}
+
+	// check the node-id, if the value is emtpy, set local directly.
+	nodeId := os.Getenv("NODE_ID")
+	if len(nodeId) == 0 {
+		nodeId = utils.Local_str
+	}
+	c.Application.NodeId = nodeId
+	if c.Application.ObjectMockerConfig == nil {
+		c.Application.ObjectMockerConfig = &conf.ObjectMockerConfig{
+			Enable: false,
+		}
+	}
+	conf.ApplicationConfig = c.Application
+
+	return c
 }

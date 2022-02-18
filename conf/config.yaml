@@ -1,41 +1,45 @@
 Processors:
-  - Name: metric_mocker_test_func_processor
+  - Name: test-p
     Tags:
       v1: test1
-    Functions:
-      - FuncName: DefaultLinearFunction
-        FuncNameAliasAlias: Default test
-      - FuncNameAlias: StandardLinearFunction test
-        FuncName: StandardLinearFunction
+    FunctionParamsList:
+#      - Type: BaseLinearFunction
+#        Name: Test1
+      - Type: BaseLinearFunction
+        Name: Test2
         Params:
-          slope: 0.5
-          offsetX: 0
-          offsetY: 0
-      - FuncNameAlias: StandardRandomFunction
-        FuncName: StandardRandomFunction
-        Params:
-          range: 10
-          seed: 12345
-          base-point: 10
-      - FuncNameAlias: RangeSecondLinearPeak
-        FuncName: RangeSecondLinearPeak
-      - FuncNameAlias: RangeMinuteLinearPeak
-        FuncName: RangeMinuteLinearPeak
-      - FuncNameAlias: RangeHourLinearPeak
-        FuncName: RangeHourLinearPeak
-#      - FuncNameAlias: RangeDayLinearPeak
-#        FuncName: RangeDayLinearPeak
-    ClientNames:
+          slope: 2.0
+        KeyFunctions:
+          x:
+            type: ModularFunctionType
+            Params:
+              modular_unit: 10.0
+            KeyFunctions:
+              x:
+                type: StartZeroFunc
+                name: Start-Zero-func
+#      - Type: StartZeroFuncType
+#        Name: Start-Zero-func
+    CronStr: "@every 5s"
+    Clients:
       - debug_client
-      - prom
-clients:
+#      - influx-test-client
+Clients:
   - name: debug_client
     type: StdoutClient
     params:
 #      STDOUT_FILE: STDOUT_FILE # If you want to disable the debug_client, delete this line.
-  - name: prom
-    type: PrometheusClient
-    params:
-      PROMETHEUS_OUTPUT_PORT: ":8080"
-application:
+#  - name: influx-test-client
+#    type: InfluxDBV1
+#    params:
+#      ServerURL: "http://127.0.0.1:8086"
+#      Database: test
+#      Table: test2
+Application:
   ticker: 5
+  port: ":3001"
+  nodeId: local
+  objectMockerConfig:
+    enable: false
+    host: "http://127.0.0.1:3000"
+    syncInterval: "@every 5s"

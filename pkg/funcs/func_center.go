@@ -1,33 +1,48 @@
 package funcs
 
-import (
-	"mmocker/utils/log"
-)
+type FunctionParams struct {
+	Type         TypeStr                   `yaml:"Type" json:"Type"`
+	Name         string                    `yaml:"Name" json:"Name"`
+	Params       map[string]interface{}    `yaml:"Params" json:"Params"`
+	KeyFunctions map[string]FunctionParams `yaml:"KeyFunctions" json:"KeyFunctions"`
+}
 
-// GetFunc return the func by param, and some func needn't the param.
-func GetFunc(name string, param map[string]float64) Function {
-	log.Logger.Infof("Load function: {%s} with param: {%v}", name, param)
-	switch name {
-	case "StandardLinearFunction": // y = slope * (x + offsetX) + offsetY
-		return NewLinearFunctionByMap(param)
-	case "DefaultLinearFunction": // y = x
-		return DefaultLinearFunction()
-	case "ReverseLinearFunction": // y = -x
-		return ReverseLinearFunction()
-	case "StandardRandomFunction":
-		return StandardRandomFunction(param)
-	case "StandardLinearRangeTimePeak":
-		return StandardLinearRangeTimePeak(param)
-	case "RangeSecondLinearPeak":
-		return RangeSecondLinearPeak()
-	case "RangeMinuteLinearPeak":
-		return RangeMinuteLinearPeak()
-	case "RangeHourLinearPeak":
-		return RangeHourLinearPeak()
-	case "RangeDayLinearPeak":
-		return RangeDayLinearPeak()
-	default:
-		// can't find any function, return funcs.ZeroFunction
-		return ZeroFunction{}
+var FuncMap map[TypeStr]func() BaseFuncInterface = map[TypeStr]func() BaseFuncInterface{
+	"MetadataUnitFunction": func() BaseFuncInterface { return &MetadataUnitFunction{} },
+	BaseLinearFunctionType: func() BaseFuncInterface { return &BaseLinearFunction{} },
+	StartZeroFuncType:      func() BaseFuncInterface { return &StartZeroFunc{} },
+	ModularFunctionType:    func() BaseFuncInterface { return &ModularFunction{} },
+}
+
+func Function(param FunctionParams) BaseFuncInterface {
+
+	functionKeyFunctions := map[string]BaseFuncInterface{}
+	var funcItem BaseFuncInterface
+
+	if param.KeyFunctions != nil {
+		for key, funcParams := range param.KeyFunctions {
+			functionKeyFunctions[key] = Function(funcParams)
+		}
 	}
+	if funcItemInitFunc, ok := FuncMap[param.Type]; !ok {
+		return nil
+	} else {
+		funcItem = InitFunction(funcItemInitFunc(), param.Params)
+	}
+
+	if funcItem == nil {
+		return nil
+	}
+
+	//funcItem.Init(param.Params)
+
+	for key, _ := range funcItem.KeyMap() {
+		// use MetadataUnitFunction as default function.
+		funcItem.SetKeyFunc(key, &MetadataUnitFunction{})
+	}
+
+	for key, keyFunction := range functionKeyFunctions {
+		funcItem.SetKeyFunc(key, keyFunction)
+	}
+	return funcItem
 }

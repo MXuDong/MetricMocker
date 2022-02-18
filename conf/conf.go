@@ -1,13 +1,13 @@
 package conf
 
-import (
-	"mmocker/pkg"
-)
+import "mmocker/pkg/proc"
+
+var ApplicationConfig *Application
 
 type Configs struct {
-	Processors  []*pkg.Processor `yaml:"processors" json:"processors"`
-	Clients     []Client         `yaml:"clients" json:"clients"`
-	Application Application      `yaml:"application"`
+	Clients     []Client         `yaml:"Clients" json:"clients"`
+	Application *Application     `yaml:"Application"`
+	Processors  []proc.Processor `yaml:"Processors"`
 }
 
 type Client struct {
@@ -17,5 +17,14 @@ type Client struct {
 }
 
 type Application struct {
-	Ticker int `yaml:"ticker" json:"ticker"`
+	Ticker             int                 `yaml:"ticker" json:"ticker"`
+	NodeId             string              `yaml:"nodeId"` // Bind with the environment. If empty, set local directly.
+	ObjectMockerConfig *ObjectMockerConfig `yaml:"objectMockerConfig"`
+	Port               string              `yaml:"port"`
+}
+
+type ObjectMockerConfig struct {
+	Enable       bool   `yaml:"enable"`
+	Host         string `yaml:"host"`
+	SyncInterval string `yaml:"syncInterval"`
 }
