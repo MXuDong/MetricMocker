@@ -5,22 +5,22 @@ Processors:
     FunctionParamsList:
 #      - Type: BaseLinearFunction
 #        Name: Test1
-      - Type: BaseLinearFunction
-        Name: Test2
-        Params:
-          slope: 2.0
-        KeyFunctions:
-          x:
-            type: ReverseSingleLinearFunction
-            Params:
-              modular_unit: 10.0
-            KeyFunctions:
-              x:
-                type: StartZeroFunc
-                name: Start-Zero-func
-#      - Type: StartZeroFuncType
-#        Name: Start-Zero-func
-    CronStr: "@every 5s"
+#      - Type: BaseLinearFunction
+#        Name: Test2
+#        Params:
+#          slope: 2.0
+#        KeyFunctions:
+#          x:
+#            type: ReverseSingleLinearFunction
+#            Params:
+#              modular_unit: 10.0
+#            KeyFunctions:
+#              x:
+#                type: StartZeroFunc
+#                name: Start-Zero-func
+      - Type: TimeSecondFunction
+        Name: test
+    CronStr: "@every 1s"
     Clients:
       - debug_client
 #      - influx-test-client
