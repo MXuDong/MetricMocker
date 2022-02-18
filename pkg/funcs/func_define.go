@@ -50,6 +50,9 @@ type BaseFuncInterface interface {
 	//function want call by different key value, use CallWithValue to get res.
 	Call(float642 float64) (float64, error)
 
+	// SetType will update function type. Use in func_center.
+	SetType(str TypeStr)
+
 	// IsDerived define the function is derived, if true, the function will skip param init stage.
 	// So all the derived function should init param by self, suck like : use init func to init param, or init param when
 	// register to func-center.
@@ -60,7 +63,16 @@ type BaseFunc struct {
 	keyFunctions map[string]BaseFuncInterface
 
 	IsDerivedVar *bool
-	TypeValue    TypeStr
+	DocValue     string
+	typeValue    TypeStr
+}
+
+func (bf *BaseFunc) SetType(str TypeStr) {
+	bf.typeValue = str
+}
+
+func (bf BaseFunc) Doc() string {
+	return bf.DocValue
 }
 
 func (bf *BaseFunc) IsDerived() bool {
@@ -72,7 +84,7 @@ func (bf *BaseFunc) IsDerived() bool {
 }
 
 func (bf BaseFunc) Type() TypeStr {
-	return bf.TypeValue
+	return bf.typeValue
 }
 
 func (bf *BaseFunc) SetConstantValue(key string, value float64) {
@@ -115,8 +127,8 @@ func (bf BaseFunc) KeyMap() map[string]struct{} {
 
 // set base function
 func (bf *BaseFunc) BaseInit(str TypeStr) {
-	if len(bf.TypeValue) == 0 {
-		bf.TypeValue = str
+	if len(bf.typeValue) == 0 {
+		bf.typeValue = str
 	}
 	bf.SetKeyFunc(UnknownKey, MetadataUnitFunction{})
 }
@@ -363,4 +375,5 @@ func (ce *CalculateError) Error() string {
 
 var (
 	ZeroValueError = CalculateError{Format: "'%s' can't be zero."}
+	NanValueError  = CalculateError{Format: "'%s' is nan value."}
 )

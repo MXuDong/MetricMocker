@@ -6,20 +6,20 @@ type FunctionParams struct {
 	Params       map[string]interface{}    `yaml:"Params" json:"Params"`
 	KeyFunctions map[string]FunctionParams `yaml:"KeyFunctions" json:"KeyFunctions"`
 }
+type FuncInitiator func() BaseFuncInterface
 
 var (
 	TrueP  = true
 	FalseP = false
 )
 
-var FuncMap = map[TypeStr]func() BaseFuncInterface{
-	BaseLinearFunctionType: func() BaseFuncInterface { return &BaseLinearFunction{} },
-	SingleLinearFunctionType: func() BaseFuncInterface {
-		return &BaseLinearFunction{BaseFunc: BaseFunc{IsDerivedVar: &TrueP, TypeValue: SingleLinearFunctionType}, Slope: 1, OffsetX: 0, OffsetY: 0}
-	},
-	StartZeroFuncType:        func() BaseFuncInterface { return &StartZeroFunc{} },
-	MetadataUnitFunctionType: func() BaseFuncInterface { return &MetadataUnitFunction{} },
-	ModularFunctionType:      func() BaseFuncInterface { return &ModularFunction{} },
+var FuncMap = map[TypeStr]FuncInitiator{
+	BaseLinearFunctionType:          BaseLinearFunctionInitiator,
+	SingleLinearFunctionType:        SingleLinearFunctionInitiator,
+	ReverseSingleLinearFunctionType: ReverseSingleLinearFunctionInitiator,
+	StartZeroFuncType:               func() BaseFuncInterface { return &StartZeroFunc{} },
+	MetadataUnitFunctionType:        func() BaseFuncInterface { return &MetadataUnitFunction{} },
+	ModularFunctionType:             ModularFunctionInitiator,
 }
 
 func Function(param FunctionParams) BaseFuncInterface {
@@ -36,6 +36,7 @@ func Function(param FunctionParams) BaseFuncInterface {
 		return nil
 	} else {
 		funcItem = InitFunction(funcItemInitFunc(), param.Params)
+		funcItem.SetType(param.Type)
 	}
 
 	if funcItem == nil {

@@ -81,15 +81,22 @@ This function has no param.
     <hr>
     Function usage:
     <div class="functionDoc">
-        {{.Doc}}
+        {{.Doc | unescaped}}
     </div>
 </div>
 </body>
 </html>
 `
 
+func UnEscapedHtml(value string) interface{} {
+	return template.HTML(value)
+}
+
 func GetHtml(funcInterface funcs.BaseFuncInterface) string {
-	temp, err := template.New("func_template").Parse(templateVar)
+	temp, err := template.New("func_template").
+		Funcs(template.FuncMap{"unescaped": UnEscapedHtml}).
+		Parse(templateVar)
+
 	if err != nil {
 		return err.Error()
 	}
