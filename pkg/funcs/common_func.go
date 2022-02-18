@@ -24,10 +24,6 @@ StartZeroFuncType always start with 0. And start work when first call. Used to r
 `
 }
 
-func (s StartZeroFunc) Type() TypeStr {
-	return StartZeroFuncType
-}
-
 func (s StartZeroFunc) Expression() string {
 	return fmt.Sprintf("(%s->start_value)", s.KeyExpressionMap()[UnknownKey])
 }
@@ -35,7 +31,7 @@ func (s StartZeroFunc) Expression() string {
 func (s *StartZeroFunc) Init() {
 	// do nothing
 	s.StartTime = -1
-	s.BaseFunc.BaseInit()
+	s.BaseFunc.BaseInit(StartZeroFuncType)
 }
 
 func (s StartZeroFunc) Params() map[string]interface{} {

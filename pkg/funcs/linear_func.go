@@ -6,6 +6,7 @@ import (
 
 const (
 	BaseLinearFunctionType = "BaseLinearFunction"
+	SingleLinearFunctionType = "SingleLinearFunction"
 )
 
 // BaseLinearFunction y = Slope * (x + OffsetX) + OffsetY
@@ -20,7 +21,7 @@ type BaseLinearFunction struct {
 
 func (b BaseLinearFunction) Doc() string {
 	return `
-BaseLinearFunction is a simple one dimensional function.
+BaseLinearFunction is a simple one dimensional function. The default is type: SingleLinearFunction function.
 `
 }
 
@@ -37,7 +38,7 @@ func (b *BaseLinearFunction) Expression() string {
 }
 
 func (b *BaseLinearFunction) Init() {
-	b.BaseFunc.BaseInit()
+	b.BaseFunc.BaseInit(BaseLinearFunctionType)
 }
 
 func (b BaseLinearFunction) Call(f float64) (float64, error) {
@@ -47,8 +48,4 @@ func (b BaseLinearFunction) Call(f float64) (float64, error) {
 	}
 
 	return b.Slope*(b.OffsetX+x) + b.OffsetY, nil
-}
-
-func (b BaseLinearFunction) Type() TypeStr {
-	return BaseLinearFunctionType
 }

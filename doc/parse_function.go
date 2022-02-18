@@ -7,6 +7,7 @@ type FunctionDescribe struct {
 	FunctionName string
 	Keys         map[string]funcs.FieldDescribe
 	Doc          string
+	IsDerived    bool
 	Expression   string
 }
 
@@ -17,5 +18,6 @@ func GetFunctionDescribe(funcInterface funcs.BaseFuncInterface) FunctionDescribe
 		Doc:          funcInterface.Doc(),
 		Expression:   funcs.GetExpression(funcInterface),
 		Keys:         funcs.GetParamFields(funcInterface),
+		IsDerived:    funcInterface.IsDerived(),
 	}
 }

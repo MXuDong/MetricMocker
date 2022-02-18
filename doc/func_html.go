@@ -48,7 +48,9 @@ Function type: <strong>{{.FunctionType}}</strong>
         </code>
     </div>
 <hr>
-{{if gt (len .Keys) 0 }}
+{{if .IsDerived}}
+This function is derived function, from {{.FunctionName}}.
+{{else if gt (len .Keys) 0 }}
     <div style="width: 100%">
         Keys:<em style="color: gray; font-size: 50%;margin-left: 3%">Keys is the variable of function.</em>
 
