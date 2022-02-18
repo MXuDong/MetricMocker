@@ -5,13 +5,16 @@ import (
 	"mmocker/doc"
 	"mmocker/pkg/funcs"
 	"net/http"
+	"sort"
 )
 
 func ListAllFunction(ctx *gin.Context) {
-	funcNames := []funcs.TypeStr{}
+	funcNames := []string{}
 	for typeName, _ := range funcs.FuncMap {
-		funcNames = append(funcNames, typeName)
+		funcNames = append(funcNames, string(typeName))
 	}
+
+	sort.Strings(funcNames)
 	ctx.JSONP(http.StatusOK, funcNames)
 }
 

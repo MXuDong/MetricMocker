@@ -55,8 +55,15 @@ func (s *StartZeroFunc) Call(f float64) (float64, error) {
 
 // ==================== metadata unit function
 
+const MetadataUnitFunctionType = "MetadataUnitFunction"
+
 // MetadataUnitFunction is the base function of key
 type MetadataUnitFunction struct {
+}
+
+// IsDerived always return false, because the MetadataUnitFunction has no derived function.
+func (m MetadataUnitFunction) IsDerived() bool {
+	return false
 }
 
 func (m MetadataUnitFunction) Doc() string {
@@ -70,7 +77,7 @@ func (m MetadataUnitFunction) KeyMap() map[string]struct{} {
 }
 
 func (m MetadataUnitFunction) Type() TypeStr {
-	return "MetadataUnitFunction"
+	return MetadataUnitFunctionType
 }
 
 func (m MetadataUnitFunction) Expression() string {

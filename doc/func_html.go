@@ -37,8 +37,8 @@ var templateVar = `
 </head>
 <body>
 <div class="baseLayout">
-    <p>Function name:
-        <strong>{{.FunctionName}}</strong>
+    <p>Function name: {{.FunctionName}} <br>
+Function type: <strong>{{.FunctionType}}</strong>
     </p>
     <hr>
     Expression:
