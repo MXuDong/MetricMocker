@@ -2,18 +2,18 @@
 
 # Kubernetes Deployment yaml
 
-[deployment.yaml](./deployment.yaml)
+TODO
 
 # Docker image:
 
-[https://hub.docker.com/repository/docker/mxudong/metric-mocker/general](https://hub.docker.com/repository/docker/mxudong/metric-mocker/general)
+TODO
 
 # Support client
-- [x] Prometheus
-- [ ] InfluxDB
+- [ ] Prometheus
+- [x] InfluxDB
 
 # About
 
 ## About Functions:
 
-See: **[pkg/funcs/README.md](pkg/funcs/README.md)**
+Start the application, and in your browser : `http://127.0.0.1:3001/function`
