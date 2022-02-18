@@ -14,7 +14,7 @@ func (s *StdoutClient) Init(param map[string]interface{}) {
 	cronInstance := cron.New()
 	cronInstance.Start()
 
-	eId, err := cronInstance.AddFunc("@every 5s", func() {
+	eId, err := cronInstance.AddFunc("@every 1s", func() {
 		if s.keys != nil {
 			for processorName, item := range s.keys {
 				for funcName, value := range item {

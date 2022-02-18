@@ -14,12 +14,16 @@ var (
 )
 
 var FuncMap = map[TypeStr]FuncInitiator{
+	// base function
+	MetadataUnitFunctionType: func() BaseFuncInterface { return &MetadataUnitFunction{} },
+	StartZeroFuncType:        func() BaseFuncInterface { return &StartZeroFunc{} },
+
 	BaseLinearFunctionType:          BaseLinearFunctionInitiator,
 	SingleLinearFunctionType:        SingleLinearFunctionInitiator,
 	ReverseSingleLinearFunctionType: ReverseSingleLinearFunctionInitiator,
-	StartZeroFuncType:               func() BaseFuncInterface { return &StartZeroFunc{} },
-	MetadataUnitFunctionType:        func() BaseFuncInterface { return &MetadataUnitFunction{} },
-	ModularFunctionType:             ModularFunctionInitiator,
+
+	ModularFunctionType:    ModularFunctionInitiator,
+	TimeSecondFunctionType: TimeSecondFunctionInitiator,
 }
 
 func Function(param FunctionParams) BaseFuncInterface {
