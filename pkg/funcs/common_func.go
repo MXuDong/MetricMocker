@@ -1,6 +1,9 @@
 package funcs
 
-import "strconv"
+import (
+	"fmt"
+	"strconv"
+)
 
 const (
 	StartZeroFuncType = "StartZeroFunc"
@@ -12,7 +15,7 @@ const (
 type StartZeroFunc struct {
 	BaseFunc
 
-	StartTime      float64 `key:"StartValue" mean:"Where value will start"`
+	StartTime float64 `key:"start_value" mean:"Where value will start" default:"-1.0"`
 }
 
 func (s StartZeroFunc) Doc() string {
@@ -21,25 +24,18 @@ StartZeroFuncType always start with 0. And start work when first call. Used to r
 `
 }
 
-func (s StartZeroFunc) KeyMap() map[string]struct{} {
-	return map[string]struct{}{
-		UnknownKey: {},
-	}
-}
-
 func (s StartZeroFunc) Type() TypeStr {
 	return StartZeroFuncType
 }
 
 func (s StartZeroFunc) Expression() string {
-	return "x(0->)"
+	return fmt.Sprintf("(%s->start_value)", s.KeyExpressionMap()[UnknownKey])
 }
 
 func (s *StartZeroFunc) Init() {
 	// do nothing
 	s.StartTime = -1
-
-	s.SetKeyFunc(UnknownKey, MetadataUnitFunction{})
+	s.BaseFunc.BaseInit()
 }
 
 func (s StartZeroFunc) Params() map[string]interface{} {
@@ -106,7 +102,6 @@ func (m MetadataUnitFunction) Call(f float64) (float64, error) {
 	return f, nil
 }
 
-
 // ==================== constant value function
 
 func GenConstantValueFunc(value float64) BaseFuncInterface {
@@ -141,11 +136,6 @@ func (b ConstantValueFunction) Expression() string {
 // Init a ConstantValueFunction with value, it can be call more than one time. It will change value.
 // Need param: ValueStr(float64)
 func (b *ConstantValueFunction) Init() {
-}
-
-func (b *ConstantValueFunction) InitP() BaseFuncInterface {
-	b.Init()
-	return b
 }
 
 // Params return value directly.

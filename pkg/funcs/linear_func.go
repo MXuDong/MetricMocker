@@ -13,8 +13,6 @@ type BaseLinearFunction struct {
 	BaseFunc
 	BaseExpression string `expression:"y=Slope*(x+OffsetX)+OffsetY"`
 
-	params map[string]interface{}
-
 	Slope   float64 `mean:"slope of line" key:"slope" default:"1"`
 	OffsetX float64 `mean:"offset of x" key:"offsetX" default:"0"`
 	OffsetY float64 `mean:"offset of y" key:"offsetY" default:"0"`
@@ -24,12 +22,6 @@ func (b BaseLinearFunction) Doc() string {
 	return `
 BaseLinearFunction is a simple one dimensional function.
 `
-}
-
-func (b BaseLinearFunction) KeyMap() map[string]struct{} {
-	return map[string]struct{}{
-		UnknownKey: {},
-	}
 }
 
 func (b *BaseLinearFunction) Expression() string {
@@ -45,14 +37,7 @@ func (b *BaseLinearFunction) Expression() string {
 }
 
 func (b *BaseLinearFunction) Init() {
-	b.SetKeyFunc(UnknownKey, MetadataUnitFunction{})
-}
-
-func (b *BaseLinearFunction) Params() map[string]interface{} {
-	if b.params == nil {
-		b.params = GetParamMap(b)
-	}
-	return b.params
+	b.BaseFunc.BaseInit()
 }
 
 func (b BaseLinearFunction) Call(f float64) (float64, error) {

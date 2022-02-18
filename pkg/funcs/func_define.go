@@ -1,6 +1,7 @@
 package funcs
 
 import (
+	"fmt"
 	"mmocker/utils/log"
 	"reflect"
 	"strconv"
@@ -38,9 +39,6 @@ type BaseFuncInterface interface {
 	//with x1(to k1) and x2(to k2), the expression is: y=k1(x)+k2(x).
 	// If bFunc is nil, it will delete specify key function.
 	SetKeyFunc(key string, bFunc BaseFuncInterface)
-
-	// Params return the params of function. If init not support some symbol value, it will return default value.
-	Params() map[string]interface{}
 
 	// Keys return the keys of function. If the function already bind with key-function, the res contain the key from
 	//key-functions.
@@ -87,6 +85,17 @@ func (bf *BaseFunc) DoFuncWithDefaultValue(key string, param float64, defaultVal
 // HasKeyFunctions return true when BaseFunc has key-functions.
 func (bf *BaseFunc) HasKeyFunctions() bool {
 	return len(bf.keyFunctions) != 0
+}
+
+func (bf BaseFunc) KeyMap() map[string]struct{} {
+	return map[string]struct{}{
+		UnknownKey: {},
+	}
+}
+
+// set base function
+func (bf *BaseFunc) BaseInit() {
+	bf.SetKeyFunc(UnknownKey, MetadataUnitFunction{})
 }
 
 // KeyExpressionMap return the map of keys.
@@ -295,8 +304,20 @@ type FieldDescribe struct {
 // TODO: Complate
 type CalculateError struct {
 	Reason string
+	Format string // format will generator the reason by Param
+}
+
+// Param will generator the reason and create new CalculateError
+func (ce *CalculateError) Param(value ...interface{}) *CalculateError {
+	return &CalculateError{
+		Reason: fmt.Sprintf(ce.Format, value...),
+	}
 }
 
 func (ce *CalculateError) Error() string {
 	return ce.Reason
 }
+
+var (
+	ZeroValueError = CalculateError{Format: "'%s' can't be zero."}
+)

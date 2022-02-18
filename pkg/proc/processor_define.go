@@ -55,7 +55,7 @@ func (p *Processor) Load() {
 		p.FunctionTags[FunctionName(name)]["function_type"] = string(funcParamItem.Type)
 
 		if !p.IgnoreFunctionParamTag {
-			params := p.Functions[FunctionName(name)].Params()
+			params := funcs.GetParamMap(p.Functions[FunctionName(name)])
 			for key, value := range params {
 				keyStr := fmt.Sprintf("%v", key)
 				valueStr := fmt.Sprintf("%v", value)

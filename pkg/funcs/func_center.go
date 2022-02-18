@@ -11,6 +11,7 @@ var FuncMap map[TypeStr]func() BaseFuncInterface = map[TypeStr]func() BaseFuncIn
 	"MetadataUnitFunction": func() BaseFuncInterface { return &MetadataUnitFunction{} },
 	BaseLinearFunctionType: func() BaseFuncInterface { return &BaseLinearFunction{} },
 	StartZeroFuncType:      func() BaseFuncInterface { return &StartZeroFunc{} },
+	ModularFunctionType:    func() BaseFuncInterface { return &ModularFunction{} },
 }
 
 func Function(param FunctionParams) BaseFuncInterface {
