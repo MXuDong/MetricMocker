@@ -15,9 +15,9 @@ type BaseLinearFunction struct {
 
 	params map[string]interface{}
 
-	Slope   float64 `mean:"slope of line" key:"slope"`
-	OffsetX float64 `mean:"offset of x" key:"offsetX"`
-	OffsetY float64 `mean:"offset of y" key:"offsetY"`
+	Slope   float64 `mean:"slope of line" key:"slope" default:"1"`
+	OffsetX float64 `mean:"offset of x" key:"offsetX" default:"0"`
+	OffsetY float64 `mean:"offset of y" key:"offsetY" default:"0"`
 }
 
 func (b BaseLinearFunction) Doc() string {

@@ -22,10 +22,11 @@ var templateVar = `
         .keyName{
 
         }
-        .keyUsage{
+        .tableCell{
             margin-left: 1%;
             padding-left: 10%;
-            font-size: 70%;
+			width: 35%;
+			font-size: 70%;
         }
         .functionDoc{
 			margin-top: 1%;
@@ -54,13 +55,17 @@ var templateVar = `
         <div style="margin-top: 1%; width: 100%">
             <table>
                 <tr>
-                    <th style="font-size: 80%; width: 30%">Key name</th>
-                    <th style="font-size: 80%;padding-left: 1%;width: 70%">Usage</th>
+                    <th style="font-size: 80%; width: 20%">Key name</th>
+                    <th class="tableCell" style="font-size: 80%;">Usage</th>
+					<th class="tableCell" style="font-size: 80%;">Type</th>
+					<th class="tableCell" style="font-size: 80%;">Default</th>
                 </tr>
      			{{range $keyName, $keyDesc := .Keys}}
                 <tr style="height: 1%">
                     <td><code>{{$keyName}}</code></td>
-                    <td class="keyUsage">{{$keyDesc.Mean}}</td>
+                    <td class="tableCell">{{$keyDesc.Mean}}</td>
+					<td class="tableCell">{{$keyDesc.Type}}</td>
+					<td class="tableCell">{{$keyDesc.Default}}</td>
                 </tr>
 				{{end}}
             </table>

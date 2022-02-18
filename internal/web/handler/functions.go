@@ -23,6 +23,10 @@ func GetFuncDescribe(ctx *gin.Context) {
 	}
 
 	funcItem := funcs.Function(funcParam)
+	if funcItem == nil {
+		ctx.String(http.StatusNotFound, "Not found function: '%s'. Please check.", funcName)
+		return
+	}
 
 	htmlInfo := doc.GetHtml(funcItem)
 	ctx.Header("Content-Type", "text/html; charset=utf-8")

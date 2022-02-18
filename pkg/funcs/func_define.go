@@ -1,7 +1,9 @@
 package funcs
 
 import (
+	"mmocker/utils/log"
 	"reflect"
+	"strconv"
 )
 
 type TypeStr string
@@ -116,6 +118,34 @@ func InitFunction(funcItem BaseFuncInterface, params map[string]interface{}) Bas
 		if !ok {
 			continue
 		}
+
+		// set default value(is has ParamDefaultKey tag)
+		if defaultValueStr, hasDefaultTag := fieldItem.Tag.Lookup(ParamDefaultKey); hasDefaultTag {
+			switch valu.FieldByName(fieldItem.Name).Kind() {
+			case reflect.Int64:
+				if defaultValue, err := strconv.ParseInt(defaultValueStr, 10, 64); err == nil {
+					valu.FieldByName(fieldItem.Name).SetInt(defaultValue)
+				} else {
+					log.Logger.Errorf("%v", err)
+				}
+			case reflect.Float64:
+				if defaultValue, err := strconv.ParseFloat(defaultValueStr, 64); err == nil {
+					valu.FieldByName(fieldItem.Name).SetFloat(defaultValue)
+				} else {
+					log.Logger.Errorf("%v", err)
+				}
+			case reflect.Bool:
+				if defaultValue, err := strconv.ParseBool(defaultValueStr); err == nil {
+					valu.FieldByName(fieldItem.Name).SetBool(defaultValue)
+				} else {
+					log.Logger.Errorf("%v", err)
+				}
+			case reflect.String:
+				valu.FieldByName(fieldItem.Name).SetString(defaultValueStr)
+			}
+		}
+
+		// parse from params
 		if paramValue, containKey := params[keyName]; containKey {
 			switch valu.FieldByName(fieldItem.Name).Kind() {
 			case reflect.Int64:
@@ -197,9 +227,13 @@ func GetParamFields(funcInterface BaseFuncInterface) map[string]FieldDescribe {
 
 		if keyName, ok := GetParamKey(fieldItem); ok {
 			meanValue := fieldItem.Tag.Get(ParamMeanKey)
+			defaultValue := fieldItem.Tag.Get(ParamDefaultKey)
+			fieldType := fieldItem.Type.Name()
 			fieldDescribe := FieldDescribe{
 				KeyName: keyName,
 				Mean:    meanValue,
+				Default: defaultValue,
+				Type:    fieldType,
 			}
 			res[keyName] = fieldDescribe
 		}
@@ -242,9 +276,10 @@ const (
 	OffsetYStr = "offset_y"
 	ValueStr   = "value"
 
-	ParamKeyKey   = "key"        // all func param should have this tag, if empty of value, use filed name as key.
-	ParamMeanKey  = "mean"       // the param usage.
-	ExpressionKey = "expression" // the function expression. If has no expression, invoke BaseFuncInterface.Expression()
+	ParamKeyKey     = "key"  // all func param should have this tag, if empty of value, use filed name as key.
+	ParamMeanKey    = "mean" // the param usage.
+	ParamDefaultKey = "default"
+	ExpressionKey   = "expression" // the function expression. If has no expression, invoke BaseFuncInterface.Expression()
 )
 
 // field properties
@@ -253,6 +288,8 @@ const (
 type FieldDescribe struct {
 	KeyName string
 	Mean    string
+	Default string
+	Type    string
 }
 
 // TODO: Complate
