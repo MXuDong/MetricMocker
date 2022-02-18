@@ -3,6 +3,7 @@ package doc
 import "mmocker/pkg/funcs"
 
 type FunctionDescribe struct {
+	FunctionType string
 	FunctionName string
 	Keys         map[string]funcs.FieldDescribe
 	Doc          string
@@ -11,7 +12,8 @@ type FunctionDescribe struct {
 
 func GetFunctionDescribe(funcInterface funcs.BaseFuncInterface) FunctionDescribe {
 	return FunctionDescribe{
-		FunctionName: string(funcInterface.Type()),
+		FunctionType: string(funcInterface.Type()),
+		FunctionName: funcs.GetFunctionName(funcInterface),
 		Doc:          funcInterface.Doc(),
 		Expression:   funcs.GetExpression(funcInterface),
 		Keys:         funcs.GetParamFields(funcInterface),

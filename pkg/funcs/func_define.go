@@ -49,10 +49,25 @@ type BaseFuncInterface interface {
 	// Call return the res of specify key value. But if function has more keys, it will set same key to call. If
 	//function want call by different key value, use CallWithValue to get res.
 	Call(float642 float64) (float64, error)
+
+	// IsDerived define the function is derived, if true, the function will skip param init stage.
+	// So all the derived function should init param by self, suck like : use init func to init param, or init param when
+	// register to func-center.
+	IsDerived() bool
 }
 
 type BaseFunc struct {
 	keyFunctions map[string]BaseFuncInterface
+
+	IsDerivedVar *bool
+}
+
+func (bf *BaseFunc) IsDerived() bool {
+	if bf.IsDerivedVar == nil {
+		var isDerived = false
+		bf.IsDerivedVar = &isDerived
+	}
+	return *bf.IsDerivedVar
 }
 
 func (bf *BaseFunc) SetConstantValue(key string, value float64) {
@@ -117,6 +132,12 @@ func (bf *BaseFunc) KeyExpressionMap() map[string]string {
 func InitFunction(funcItem BaseFuncInterface, params map[string]interface{}) BaseFuncInterface {
 	if funcItem == nil {
 		return MetadataUnitFunction{}
+	}
+
+	if funcItem.IsDerived() {
+		// if is derived, skip param init stage.
+		funcItem.Init()
+		return funcItem
 	}
 
 	typ := reflect.TypeOf(funcItem).Elem()
@@ -249,6 +270,15 @@ func GetParamFields(funcInterface BaseFuncInterface) map[string]FieldDescribe {
 	}
 
 	return res
+}
+
+// GetFunctionName return the function struct name.
+func GetFunctionName(funcInterface BaseFuncInterface) string {
+	if funcInterface == nil {
+		return ""
+	}
+	typ := reflect.TypeOf(funcInterface).Elem()
+	return typ.Name()
 }
 
 func GetExpression(funcInterface BaseFuncInterface) string {

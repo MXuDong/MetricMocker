@@ -7,11 +7,11 @@ type FunctionParams struct {
 	KeyFunctions map[string]FunctionParams `yaml:"KeyFunctions" json:"KeyFunctions"`
 }
 
-var FuncMap map[TypeStr]func() BaseFuncInterface = map[TypeStr]func() BaseFuncInterface{
-	"MetadataUnitFunction": func() BaseFuncInterface { return &MetadataUnitFunction{} },
-	BaseLinearFunctionType: func() BaseFuncInterface { return &BaseLinearFunction{} },
-	StartZeroFuncType:      func() BaseFuncInterface { return &StartZeroFunc{} },
-	ModularFunctionType:    func() BaseFuncInterface { return &ModularFunction{} },
+var FuncMap = map[TypeStr]func() BaseFuncInterface{
+	BaseLinearFunctionType:   func() BaseFuncInterface { return &BaseLinearFunction{} },
+	StartZeroFuncType:        func() BaseFuncInterface { return &StartZeroFunc{} },
+	MetadataUnitFunctionType: func() BaseFuncInterface { return &MetadataUnitFunction{} },
+	ModularFunctionType:      func() BaseFuncInterface { return &ModularFunction{} },
 }
 
 func Function(param FunctionParams) BaseFuncInterface {
