@@ -60,6 +60,7 @@ type BaseFunc struct {
 	keyFunctions map[string]BaseFuncInterface
 
 	IsDerivedVar *bool
+	TypeValue    TypeStr
 }
 
 func (bf *BaseFunc) IsDerived() bool {
@@ -68,6 +69,10 @@ func (bf *BaseFunc) IsDerived() bool {
 		bf.IsDerivedVar = &isDerived
 	}
 	return *bf.IsDerivedVar
+}
+
+func (bf BaseFunc) Type() TypeStr {
+	return bf.TypeValue
 }
 
 func (bf *BaseFunc) SetConstantValue(key string, value float64) {
@@ -109,7 +114,10 @@ func (bf BaseFunc) KeyMap() map[string]struct{} {
 }
 
 // set base function
-func (bf *BaseFunc) BaseInit() {
+func (bf *BaseFunc) BaseInit(str TypeStr) {
+	if len(bf.TypeValue) == 0 {
+		bf.TypeValue = str
+	}
 	bf.SetKeyFunc(UnknownKey, MetadataUnitFunction{})
 }
 
@@ -284,6 +292,11 @@ func GetFunctionName(funcInterface BaseFuncInterface) string {
 func GetExpression(funcInterface BaseFuncInterface) string {
 	if funcInterface == nil {
 		return ""
+	}
+
+	// if is derived, use expression func to get
+	if funcInterface.IsDerived() {
+		return "y=" + funcInterface.Expression()
 	}
 
 	typ := reflect.TypeOf(funcInterface).Elem()

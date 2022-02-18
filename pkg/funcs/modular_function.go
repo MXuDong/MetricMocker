@@ -14,16 +14,13 @@ type ModularFunction struct {
 	ModularUnit    float64 `key:"modular_unit" default:"1" mean:"modular value, can't be zero."`
 }
 
-func (m ModularFunction) Type() TypeStr {
-	return ModularFunctionType
-}
 
 func (m ModularFunction) Expression() string {
 	return fmt.Sprintf("%s%%%f", m.KeyExpressionMap()[UnknownKey], m.ModularUnit)
 }
 
 func (m ModularFunction) Init() {
-	m.BaseFunc.BaseInit()
+	m.BaseFunc.BaseInit(ModularFunctionType)
 }
 
 func (m ModularFunction) Doc() string {

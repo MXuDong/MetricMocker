@@ -7,8 +7,16 @@ type FunctionParams struct {
 	KeyFunctions map[string]FunctionParams `yaml:"KeyFunctions" json:"KeyFunctions"`
 }
 
+var (
+	TrueP  = true
+	FalseP = false
+)
+
 var FuncMap = map[TypeStr]func() BaseFuncInterface{
-	BaseLinearFunctionType:   func() BaseFuncInterface { return &BaseLinearFunction{} },
+	BaseLinearFunctionType: func() BaseFuncInterface { return &BaseLinearFunction{} },
+	SingleLinearFunctionType: func() BaseFuncInterface {
+		return &BaseLinearFunction{BaseFunc: BaseFunc{IsDerivedVar: &TrueP, TypeValue: SingleLinearFunctionType}, Slope: 1, OffsetX: 0, OffsetY: 0}
+	},
 	StartZeroFuncType:        func() BaseFuncInterface { return &StartZeroFunc{} },
 	MetadataUnitFunctionType: func() BaseFuncInterface { return &MetadataUnitFunction{} },
 	ModularFunctionType:      func() BaseFuncInterface { return &ModularFunction{} },
