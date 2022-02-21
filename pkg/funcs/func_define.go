@@ -128,10 +128,17 @@ func (bf BaseFunc) KeyMap() map[string]struct{} {
 
 // set base function
 func (bf *BaseFunc) BaseInit(str TypeStr) {
-	if len(bf.typeValue) == 0 {
+		if len(bf.typeValue) == 0 {
 		bf.typeValue = str
 	}
-	bf.SetKeyFunc(UnknownKey, MetadataUnitFunction{})
+
+	if len(bf.keyFunctions) == 0 {
+		bf.SetKeyFunc(UnknownKey, &MetadataUnitFunction{})
+	}
+
+	for _, subFunction := range bf.keyFunctions {
+		subFunction.Init()
+	}
 }
 
 // KeyExpressionMap return the map of keys.
@@ -141,7 +148,7 @@ func (bf *BaseFunc) KeyExpressionMap() map[string]string {
 		return res
 	}
 	for key, funcItem := range bf.keyFunctions {
-		res[key] = (funcItem).Expression()
+		res[key] = funcItem.Expression()
 	}
 
 	return res

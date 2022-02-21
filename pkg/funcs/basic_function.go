@@ -28,7 +28,7 @@ func (b BaseDivisionFunction) Expression() string {
 	return expressionBytes.String()
 }
 
-func (b BaseDivisionFunction) Init() {
+func (b *BaseDivisionFunction) Init() {
 	b.BaseInit(BaseDivisionFunctionType)
 }
 

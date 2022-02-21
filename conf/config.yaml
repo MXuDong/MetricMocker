@@ -3,16 +3,16 @@ Processors:
     Tags:
       v1: test1
     FunctionParamsList:
-#      - Type: BaseLinearFunction
-#        Name: Test1
-      - Type: BaseDivisionFunction
-        Name: Test2
-        Params:
-          divisor: 2.0
-        KeyFunctions:
-          x:
-            type: StartZeroFunc
-            name: Start-Zero-func
+      - Type: TimeMinutesFunction
+        Name: Test1
+#      - Type: BaseDivisionFunction
+#        Name: Test2
+#        Params:
+#          divisor: 2.0
+#        KeyFunctions:
+#          x:
+#            type: StartZeroFunc
+#            name: Start-Zero-func
 #      - Type: TimeSecondsFunction
 #        Name: test
     CronStr: "@every 1s"

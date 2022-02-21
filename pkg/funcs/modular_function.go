@@ -27,7 +27,7 @@ func (m ModularFunction) Expression() string {
 	return expressionBytes.String()
 }
 
-func (m ModularFunction) Init() {
+func (m *ModularFunction) Init() {
 	m.BaseFunc.BaseInit(ModularFunctionType)
 }
 
