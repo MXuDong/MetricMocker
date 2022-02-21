@@ -96,6 +96,7 @@ func (bf *BaseFunc) SetKeyFunc(key string, bFunc BaseFuncInterface) {
 		bf.keyFunctions = map[string]BaseFuncInterface{}
 	}
 	if bFunc == nil {
+		// if bFunc is nil, delete function.
 		if _, ok := bf.keyFunctions[key]; ok {
 			delete(bf.keyFunctions, key)
 		}

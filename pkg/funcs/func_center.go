@@ -35,11 +35,6 @@ func Function(param FunctionParams) BaseFuncInterface {
 	functionKeyFunctions := map[string]BaseFuncInterface{}
 	var funcItem BaseFuncInterface
 
-	if param.KeyFunctions != nil {
-		for key, funcParams := range param.KeyFunctions {
-			functionKeyFunctions[key] = Function(funcParams)
-		}
-	}
 	if funcItemInitFunc, ok := FuncMap[param.Type]; !ok {
 		return nil
 	} else {
@@ -47,17 +42,32 @@ func Function(param FunctionParams) BaseFuncInterface {
 		funcItem.SetType(param.Type)
 	}
 
-	if funcItem == nil {
-		return nil
+	if !funcItem.IsDerived() {
+		// if function is Derived, skip set KeyFunction.
+		if param.KeyFunctions != nil {
+			for key, funcParams := range param.KeyFunctions {
+				functionKeyFunctions[key] = Function(funcParams)
+			}
+		}
+		for key, _ := range funcItem.KeyMap() {
+			// set default KeyFunction
+			// use MetadataUnitFunction as default function.
+			funcItem.SetKeyFunc(key, &MetadataUnitFunction{})
+		}
+		for key, keyFunction := range functionKeyFunctions {
+			funcItem.SetKeyFunc(key, keyFunction)
+		}
+	} else {
+		// cover all KeyFunction
+		keyMaps := funcItem.Keys()
+		keyFunctions := funcItem.KeyMap()
+		for key, _ := range keyMaps {
+			if _, ok := keyFunctions[key]; !ok {
+				// if key has no function, set default key-function.
+				funcItem.SetKeyFunc(key, &MetadataUnitFunction{})
+			}
+		}
 	}
 
-	for key, _ := range funcItem.KeyMap() {
-		// use MetadataUnitFunction as default function.
-		funcItem.SetKeyFunc(key, &MetadataUnitFunction{})
-	}
-
-	for key, keyFunction := range functionKeyFunctions {
-		funcItem.SetKeyFunc(key, keyFunction)
-	}
 	return funcItem
 }
