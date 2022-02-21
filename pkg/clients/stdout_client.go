@@ -46,6 +46,6 @@ func (s *StdoutClient) InitP(param map[string]interface{}) BaseClientInterface {
 
 func (s *StdoutClient) Push(processorName string, result map[string]common.FunctionResult) {
 	s.rwLock.Lock()
-	defer s.rwLock.Lock()
+	defer s.rwLock.Unlock()
 	s.keys[processorName] = result
 }
