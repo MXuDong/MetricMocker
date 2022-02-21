@@ -153,6 +153,7 @@ func InitFunction(funcItem BaseFuncInterface, params map[string]interface{}) Bas
 	if funcItem == nil {
 		return MetadataUnitFunction{}
 	}
+	log.Logger.Infof("Init function: [%s], params: %v", funcItem.Type(), params)
 
 	if funcItem.IsDerived() {
 		// if is derived, skip param init stage.
