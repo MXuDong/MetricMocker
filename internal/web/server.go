@@ -1,6 +1,7 @@
 package web
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"mmocker/conf"
 	"mmocker/internal/web/handler"
@@ -15,9 +16,11 @@ func Run() {
 	r.GET("/function", handler.ListAllFunction)
 
 	r.GET("/function/:func", handler.GetFuncDescribe)
+	r.GET("/function/:func/value", handler.GetFunctionValue)
 
 	// get conf.ApplicationConfig
 	r.GET("/application-config", handler.GetConfig)
 
-	r.Run(conf.ApplicationConfig.Port)
+	err := r.Run(conf.ApplicationConfig.Port)
+	fmt.Printf("%v", err)
 }

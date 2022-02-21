@@ -13,73 +13,100 @@ var templateVar = `
     <meta charset="UTF-8">
     <title>{{.FunctionName}}</title>
     <style>
-        .baseLayout{
+        .baseLayout {
             width: 80%;
             margin-left: 10%;
-            margin-top: 1%;
+            margin-top: 2%;
             font-size: 150%;
         }
-        .keyName{
+
+        .keyName {
 
         }
-        .tableCell{
-            margin-left: 1%;
+
+        /*The describes.*/
+        .describe {
+            color: gray;
+            margin-left: 3%;
+            font-size: 75%;
+            width: 75%;
+        }
+
+        .tableBellowLines{
+            border-bottom:1px dashed gray;
+        }
+        /*Table cell style.*/
+        .tableCell {
             padding-left: 10%;
-			width: 35%;
-			font-size: 70%;
+            border-left: 0;
+            border-right: 0;
+            width: 30%;
+            font-size: 70%;
         }
-        .functionDoc{
-			margin-top: 1%;
+        /*Doc of function style.*/
+        .functionDoc {
+            margin-top: 1%;
             margin-left: 2%;
-			font-size: 75%;
+            font-size: 75%;
         }
+
     </style>
 </head>
 <body>
+<a href="/function" >Back</a>
 <div class="baseLayout">
-    <p>Function name: {{.FunctionName}} <br>
-Function type: <strong>{{.FunctionType}}</strong>
-    </p>
+    <h2> {{.FunctionName}} </h2>
+
+    <p>Function type: <strong>{{.FunctionType}}</strong></p>
+
+    <em class="describe">The function type is the type of function. But some function has same type.</em>
+    <br>
+    <em class="describe">Specify the target function in metric-mocker with function's name instead of function's type.</em>
+
     <hr>
     Expression:
-    <div style="display: inline-block;margin-left: 2%;color: midnightblue">
+    <br>
+    <div style="margin-left: 2%;color: midnightblue">
         <code style="font-size: 150%">
-           {{.Expression}} 
+            {{.Expression}}
         </code>
     </div>
-<hr>
-{{if .IsDerived}}
-This function is derived function, from {{.FunctionName}}.
-{{else if gt (len .Keys) 0 }}
+    <em class="describe">The derived function has no param, so the derived function can't specify any param.</em>
+    <hr>
     <div style="width: 100%">
-        Keys:<em style="color: gray; font-size: 50%;margin-left: 3%">Keys is the variable of function.</em>
+        <h4>Keys:</h4>
+        <em class="describe">Keys is the variable of function.</em><br>
+
+        {{if .IsDerived}}
+        This function is derived function, from {{.FunctionName}}.
+        {{else if gt (len .Keys) 0 }}
 
         <div style="margin-top: 1%; width: 100%">
             <table>
                 <tr>
                     <th style="font-size: 80%; width: 20%">Key name</th>
                     <th class="tableCell" style="font-size: 80%;">Usage</th>
-					<th class="tableCell" style="font-size: 80%;">Type</th>
-					<th class="tableCell" style="font-size: 80%;">Default</th>
+                    <th class="tableCell" style="font-size: 80%;">Type</th>
+                    <th class="tableCell" style="font-size: 80%;">Default</th>
                 </tr>
-     			{{range $keyName, $keyDesc := .Keys}}
+                {{range $keyName, $keyDesc := .Keys}}
                 <tr style="height: 1%">
-                    <td><code>{{$keyName}}</code></td>
-                    <td class="tableCell">{{$keyDesc.Mean}}</td>
-					<td class="tableCell">{{$keyDesc.Type}}</td>
-					<td class="tableCell">{{$keyDesc.Default}}</td>
+                    <td class="tableBellowLines"><code>{{$keyName}}</code></td>
+                    <td class="tableCell tableBellowLines">{{$keyDesc.Mean}}</td>
+                    <td class="tableCell tableBellowLines">{{$keyDesc.Type}}</td>
+                    <td class="tableCell tableBellowLines">{{$keyDesc.Default}}</td>
                 </tr>
-				{{end}}
+                {{end}}
             </table>
         </div>
     </div>
-{{else}}
-<div>
-This function has no param.
-</div>
-{{end}}
+    {{else}}
+    <div>
+        This function has no param.
+    </div>
+    {{end}}
     <hr>
-    Function usage:
+    <h4>Function usage:</h4>
     <div class="functionDoc">
         {{.Doc | unescaped}}
     </div>

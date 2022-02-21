@@ -1,5 +1,7 @@
 package funcs
 
+import "mmocker/utils/log"
+
 type FunctionParams struct {
 	Type         TypeStr                   `yaml:"Type" json:"Type"`
 	Name         string                    `yaml:"Name" json:"Name"`
@@ -22,12 +24,14 @@ var FuncMap = map[TypeStr]FuncInitiator{
 	SingleLinearFunctionType:        SingleLinearFunctionInitiator,
 	ReverseSingleLinearFunctionType: ReverseSingleLinearFunctionInitiator,
 
-	ModularFunctionType:    ModularFunctionInitiator,
-	TimeSecondFunctionType: TimeSecondFunctionInitiator,
+	ModularFunctionType:     ModularFunctionInitiator,
+	TimeSecondsFunctionType: TimeSecondsFunctionInitiator,
+	//TimeMinutesFunctionType: TimeMinutesFunctionInitiator,
+	TimeSecondsInHourFunctionType: TimeSecondsInHourFunctionInitiator,
 }
 
 func Function(param FunctionParams) BaseFuncInterface {
-
+	log.Logger.Infof("Get function: type: [%s], params: %v", param.Type, param.Params)
 	functionKeyFunctions := map[string]BaseFuncInterface{}
 	var funcItem BaseFuncInterface
 
@@ -46,8 +50,6 @@ func Function(param FunctionParams) BaseFuncInterface {
 	if funcItem == nil {
 		return nil
 	}
-
-	//funcItem.Init(param.Params)
 
 	for key, _ := range funcItem.KeyMap() {
 		// use MetadataUnitFunction as default function.

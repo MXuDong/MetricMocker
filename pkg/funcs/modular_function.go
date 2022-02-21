@@ -3,6 +3,7 @@ package funcs
 import (
 	"fmt"
 	"math"
+	"strings"
 )
 
 type ModularFunction struct {
@@ -15,7 +16,15 @@ type ModularFunction struct {
 }
 
 func (m ModularFunction) Expression() string {
-	return fmt.Sprintf("(%s+offsetX)%%%.2f+offsetY", m.KeyExpressionMap()[UnknownKey], m.ModularUnit)
+	//return fmt.Sprintf("(%s+offsetX)%%%.2f+offsetY", m.KeyExpressionMap()[UnknownKey], m.ModularUnit)
+	expressionBytes := strings.Builder{}
+	expressionBytes.WriteString("(")
+	expressionBytes.WriteString(m.KeyExpressionMap()[UnknownKey])
+	expressionBytes.WriteString(ExpressionOfValueWithSymbol(m.OffsetX))
+	expressionBytes.WriteString(")%")
+	expressionBytes.WriteString(fmt.Sprintf("%.2f", m.ModularUnit))
+	expressionBytes.WriteString(ExpressionOfValueWithSymbol(m.OffsetY))
+	return expressionBytes.String()
 }
 
 func (m ModularFunction) Init() {
@@ -40,8 +49,7 @@ func (m ModularFunction) Call(f float64) (float64, error) {
 // function initiator
 
 const (
-	ModularFunctionType    = "ModularFunctionType"
-	TimeSecondFunctionType = "TimeSecondFunction"
+	ModularFunctionType = "ModularFunctionType"
 )
 
 var (
@@ -50,24 +58,8 @@ var (
 			BaseFunc: BaseFunc{
 				DocValue: `ModularFunction is a modular function, to get the value % specify value. And the ModularFunction 
 provide some derived function to get time.<br>
-
-<ul>
-<li> TimeSecondFunction: Always return value in 0-59. </li>
-</ul>
 `,
 			},
-		}
-	}
-	TimeSecondFunctionInitiator FuncInitiator = func() BaseFuncInterface {
-		return &ModularFunction{
-			BaseFunc: BaseFunc{
-				IsDerivedVar: &TrueP,
-				DocValue: `TimeSecondFunction always return value in 0-59, and set offset to zero(offsetX, offsetY).
-`,
-			},
-			ModularUnit: 60,
-			OffsetX:     0,
-			OffsetY:     0,
 		}
 	}
 )
