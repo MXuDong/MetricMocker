@@ -3,23 +3,18 @@ Processors:
     Tags:
       v1: test1
     FunctionParamsList:
-      - Type: BaseLinearFunction
-        Name: Test1
-      - Type: BaseLinearFunction
+#      - Type: BaseLinearFunction
+#        Name: Test1
+      - Type: BaseDivisionFunction
         Name: Test2
         Params:
-          slope: 2.0
+          divisor: 2.0
         KeyFunctions:
           x:
-            type: ReverseSingleLinearFunction
-            Params:
-              modular_unit: 10.0
-            KeyFunctions:
-              x:
-                type: StartZeroFunc
-                name: Start-Zero-func
-      - Type: TimeSecondsFunction
-        Name: test
+            type: StartZeroFunc
+            name: Start-Zero-func
+#      - Type: TimeSecondsFunction
+#        Name: test
     CronStr: "@every 1s"
     Clients:
       - debug_client

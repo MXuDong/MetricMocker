@@ -20,6 +20,8 @@ var FuncMap = map[TypeStr]FuncInitiator{
 	MetadataUnitFunctionType: func() BaseFuncInterface { return &MetadataUnitFunction{} },
 	StartZeroFuncType:        func() BaseFuncInterface { return &StartZeroFunc{} },
 
+	BaseDivisionFunctionType: BaseDivisionFunctionInitiator,
+
 	BaseLinearFunctionType:          BaseLinearFunctionInitiator,
 	SingleLinearFunctionType:        SingleLinearFunctionInitiator,
 	ReverseSingleLinearFunctionType: ReverseSingleLinearFunctionInitiator,
