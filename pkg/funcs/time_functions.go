@@ -34,4 +34,20 @@ If input value is time, the return value is the seconds value in one Hour.
 			OffsetY:     0,
 		}
 	}
+//	TimeMinutesFunctionInitiator FuncInitiator = func() BaseFuncInterface {
+//		return &ModularFunction{
+//			BaseFunc: BaseFunc{
+//				IsDerivedVar: &TrueP,
+//				DocValue: `TimeSecondFunction always return value in 0-3599, and set offset to zero(offsetX, offsetY).
+//If input value is time, the return value is the seconds value in one Hour.
+//`,
+//				keyFunctions: map[string]BaseFuncInterface{
+//					UnknownKey:
+//				},
+//			},
+//			ModularUnit: 60 * 60,
+//			OffsetX:     0,
+//			OffsetY:     0,
+//		}
+//	}
 )
