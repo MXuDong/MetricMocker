@@ -11,8 +11,8 @@ type ModularFunction struct {
 	baseExpression string `expression:"y=(x+offsetX)%modular_unit+offsetY"`
 	params         map[string]interface{}
 	ModularUnit    float64 `key:"modular_unit" default:"1" mean:"modular value, can't be zero."`
-	OffsetX        float64 `key:"offsetX" default:"0" mean:"offset of x"`
-	OffsetY        float64 `key:"offsetY" default:"0" mean:"offset of y"`
+	OffsetX        float64 `key:"offsetX" default:"0" mean:"offset of x."`
+	OffsetY        float64 `key:"offsetY" default:"0" mean:"offset of y."`
 }
 
 func (m ModularFunction) Expression() string {

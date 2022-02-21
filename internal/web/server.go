@@ -14,7 +14,6 @@ func Run() {
 
 	r.GET("/functions", handler.ListAllFunction)
 	r.GET("/function", handler.ListAllFunction)
-
 	r.GET("/function/:func", handler.GetFuncDescribe)
 	r.GET("/function/:func/value", handler.GetFunctionValue)
 

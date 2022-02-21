@@ -65,12 +65,12 @@ func GetFunctionValue(ctx *gin.Context) {
 		ctx.String(http.StatusBadRequest, "Error range, out of limit, please set From < End and set Step > 0")
 		return
 	}
-	if (params.End-params.From)/params.Step > 100 {
-		ctx.String(http.StatusBadRequest, "The range of (end - from)/step is so large")
+	if (params.End-params.From)/params.Step > 1000 {
+		ctx.String(http.StatusBadRequest, "The range of (end - from)/step is so large, please make sure the point count less than 1000(can equals).")
 		return
 	}
 
-	resValue := []model.ValueMap{}
+	var resValue []model.ValueMap
 
 	for inputValue := params.From; inputValue <= params.End; inputValue += params.Step {
 		outputValue, err := funcItem.Call(inputValue)
