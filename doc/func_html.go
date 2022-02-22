@@ -12,7 +12,11 @@ var templateVar = `
 <head>
     <meta charset="UTF-8">
     <title>{{.FunctionName}}</title>
-    <link href="/statics/bootstrap-5.1.3-dist/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+            crossorigin="anonymous"></script>
     <script>
         function getFunctionValue() {
             let httpRequest = new XMLHttpRequest();//第一步：建立所需的对象
@@ -50,12 +54,13 @@ var templateVar = `
                         <h3>Function type:</h3>
                     </div>
                     <div class="col-8">
-                        <em>The function type is the type of function. But some function has same type.</em>
-                        <em>Specify the target function in metric-mocker with function's name instead of function's
-                            type.</em>
+                        <h3>{{.FunctionType}}</h3>
                     </div>
                     <div class="col-3"></div>
-                    <div class="col-8"><h3>{{.FunctionType}}</h3></div>
+                    <div class="col-8"><em>The function type is the type of function. But some function has same
+                        type.</em>
+                        <em>Specify the target function in metric-mocker with function's name instead of function's
+                            type.</em></div>
                 </div>
                 <div class="col-12">
 
@@ -124,6 +129,9 @@ var templateVar = `
                 </div>
                 <div class="col-12">{{.Doc | unescaped}}</div>
             </div>
+            <hr>
+
+
         </div>
         <div class="col-1"></div>
     </div>
