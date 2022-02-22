@@ -40,7 +40,7 @@ var templateVar = `
             padding-left: 10%;
             border-left: 0;
             border-right: 0;
-            width: 30%;
+            width: 20%;
             font-size: 70%;
         }
         /*Doc of function style.*/
@@ -53,7 +53,7 @@ var templateVar = `
     </style>
 </head>
 <body>
-<a href="/function" >Back</a>
+<a href="/function" >Functions</a>
 <div class="baseLayout">
     <h2> {{.FunctionName}} </h2>
 
@@ -84,7 +84,7 @@ var templateVar = `
         <div style="margin-top: 1%; width: 100%">
             <table>
                 <tr>
-                    <th style="font-size: 80%; width: 20%">Key name</th>
+                    <th class="tableCell" style="font-size: 80%;">Key name</th>
                     <th class="tableCell" style="font-size: 80%;">Usage</th>
                     <th class="tableCell" style="font-size: 80%;">Type</th>
                     <th class="tableCell" style="font-size: 80%;">Default</th>

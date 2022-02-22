@@ -15,17 +15,19 @@ type BaseDivisionFunction struct {
 	Divisor float64 `key:"divisor" mean:"divisor of function, can't be zero'" default:"1"`
 }
 
-func (b BaseDivisionFunction) Expression() string {
-	// (x + offsetX)/divisor + offsetY
-	expressionBytes := strings.Builder{}
-	expressionBytes.WriteString("(")
-	expressionBytes.WriteString(b.KeyExpressionMap()[UnknownKey])
-	expressionBytes.WriteString(ExpressionOfValueWithSymbol(b.OffsetX))
-	expressionBytes.WriteString(")/")
-	expressionBytes.WriteString(fmt.Sprintf("%.2f", b.Divisor))
-	expressionBytes.WriteString(ExpressionOfValueWithSymbol(b.OffsetY))
-
-	return expressionBytes.String()
+func (b *BaseDivisionFunction) Expression() string {
+	if len(b.baseExpression) == 0 {
+		// (x + offsetX)/divisor + offsetY
+		expressionBytes := strings.Builder{}
+		expressionBytes.WriteString("(")
+		expressionBytes.WriteString(b.KeyExpressionMap()[UnknownKey])
+		expressionBytes.WriteString(ExpressionOfValueWithSymbol(b.OffsetX))
+		expressionBytes.WriteString(")/")
+		expressionBytes.WriteString(fmt.Sprintf("%.2f", b.Divisor))
+		expressionBytes.WriteString(ExpressionOfValueWithSymbol(b.OffsetY))
+		b.baseExpression = expressionBytes.String()
+	}
+	return b.baseExpression
 }
 
 func (b *BaseDivisionFunction) Init() {
