@@ -27,10 +27,12 @@ var FuncMap = map[TypeStr]FuncInitiator{
 	SingleLinearFunctionType:        SingleLinearFunctionInitiator,
 	ReverseSingleLinearFunctionType: ReverseSingleLinearFunctionInitiator,
 
-	ModularFunctionType:           ModularFunctionInitiator,
+	ModularFunctionType: ModularFunctionInitiator,
+
 	TimeSecondsFunctionType:       TimeSecondsFunctionInitiator,
 	TimeMinutesFunctionType:       TimeMinutesFunctionInitiator,
 	TimeSecondsInHourFunctionType: TimeSecondsInHourFunctionInitiator,
+	TimeHoursFunctionType:         TimeHoursFunctionInitiator,
 }
 
 func Function(param FunctionParams) BaseFuncInterface {

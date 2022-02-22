@@ -77,8 +77,7 @@ func (bf BaseFunc) Doc() string {
 
 func (bf *BaseFunc) IsDerived() bool {
 	if bf.IsDerivedVar == nil {
-		var isDerived = false
-		bf.IsDerivedVar = &isDerived
+		bf.IsDerivedVar = &FalseP
 	}
 	return *bf.IsDerivedVar
 }
@@ -128,7 +127,7 @@ func (bf BaseFunc) KeyMap() map[string]struct{} {
 
 // set base function
 func (bf *BaseFunc) BaseInit(str TypeStr) {
-		if len(bf.typeValue) == 0 {
+	if len(bf.typeValue) == 0 {
 		bf.typeValue = str
 	}
 
