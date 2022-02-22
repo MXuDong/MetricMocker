@@ -10,6 +10,8 @@ import (
 func Run() {
 	r := gin.Default()
 
+	r.Static("/statics", "./statics")
+
 	r.GET("/processors", handler.ListProcessor)
 
 	r.GET("/functions", handler.ListAllFunction)

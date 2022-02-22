@@ -21,6 +21,7 @@ var FuncMap = map[TypeStr]FuncInitiator{
 	StartZeroFuncType:        func() BaseFuncInterface { return &StartZeroFunc{} },
 
 	BaseDivisionFunctionType: BaseDivisionFunctionInitiator,
+	FloatFloorFunctionType:   FloatFloorFunctionInitiator,
 
 	BaseLinearFunctionType:          BaseLinearFunctionInitiator,
 	SingleLinearFunctionType:        SingleLinearFunctionInitiator,

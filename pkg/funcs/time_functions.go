@@ -2,7 +2,7 @@ package funcs
 
 const (
 	TimeSecondsFunctionType       = "TimeSecondsFunction"
-	TimeSecondsInHourFunctionType = "TimeSecondsInHourFunctionType"
+	TimeSecondsInHourFunctionType = "TimeSecondsInHourFunction"
 	TimeMinutesFunctionType       = "TimeMinutesFunction"
 	TimeHoursFunctionType         = "Time"
 )
@@ -42,13 +42,17 @@ If input value is time, the return value is the seconds value in one Hour.
 If input value is time, the return value is the minute value in one Hour.
 `,
 				keyFunctions: map[string]BaseFuncInterface{
-					UnknownKey: &BaseDivisionFunction{
+					UnknownKey: &FloatFloorFunction{
 						BaseFunc: BaseFunc{
-							IsDerivedVar: &TrueP,
+							keyFunctions: map[string]BaseFuncInterface{
+								UnknownKey: &BaseDivisionFunction{
+									BaseFunc: BaseFunc{
+										IsDerivedVar: &TrueP,
+									},
+									Divisor: 60,
+								},
+							},
 						},
-						Divisor: 60,
-						OffsetX: 0,
-						OffsetY: 0,
 					},
 				},
 			},

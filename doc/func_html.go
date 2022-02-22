@@ -12,103 +12,120 @@ var templateVar = `
 <head>
     <meta charset="UTF-8">
     <title>{{.FunctionName}}</title>
-    <style>
-        .baseLayout {
-            width: 80%;
-            margin-left: 10%;
-            margin-top: 2%;
-            font-size: 150%;
+    <link href="/statics/bootstrap-5.1.3-dist/css/bootstrap.css" rel="stylesheet" type="text/css">
+    <script>
+        function getFunctionValue() {
+            let httpRequest = new XMLHttpRequest();//第一步：建立所需的对象
+            httpRequest.open('GET', '/function/{{.FunctionName}}/value', true);//第二步：打开连接  将请求参数写在url中  ps:"./Ptest.php?name=test&nameone=testone"
+            httpRequest.send();//第三步：发送请求  将请求参数写在URL中
+            /**
+             * 获取数据后的处理程序
+             */
+            httpRequest.onreadystatechange = function () {
+                if (httpRequest.status === 200) {
+                    let json = httpRequest.responseText;//获取到json字符串，还需解析
+                    console.log(json);
+                } else {
+                    console.log(httpRequest.responseText)
+                }
+            };
         }
-
-        .keyName {
-
-        }
-
-        /*The describes.*/
-        .describe {
-            color: gray;
-            margin-left: 3%;
-            font-size: 75%;
-            width: 75%;
-        }
-
-        .tableBellowLines{
-            border-bottom:1px dashed gray;
-        }
-        /*Table cell style.*/
-        .tableCell {
-            padding-left: 10%;
-            border-left: 0;
-            border-right: 0;
-            width: 20%;
-            font-size: 70%;
-        }
-        /*Doc of function style.*/
-        .functionDoc {
-            margin-top: 1%;
-            margin-left: 2%;
-            font-size: 75%;
-        }
-
-    </style>
+    </script>
 </head>
 <body>
-<a href="/function" >Functions</a>
-<div class="baseLayout">
-    <h2> {{.FunctionName}} </h2>
 
-    <p>Function type: <strong>{{.FunctionType}}</strong></p>
+<div class="container">
+    <div class="row align-items-start">
+        <div class="col-1"></div>
+        <div class="col-10">
+            <div class="row align-items-start">
+                <div class="col-4">
+                    <h1>{{.FunctionName}}</h1>
+                </div>
+                <br>
+                <hr>
+                <br>
+                <div class="row align-items-start">
+                    <div class="col-3">
+                        <h3>Function type:</h3>
+                    </div>
+                    <div class="col-8">
+                        <em>The function type is the type of function. But some function has same type.</em>
+                        <em>Specify the target function in metric-mocker with function's name instead of function's
+                            type.</em>
+                    </div>
+                    <div class="col-3"></div>
+                    <div class="col-8"><h3>{{.FunctionType}}</h3></div>
+                </div>
+                <div class="col-12">
 
-    <em class="describe">The function type is the type of function. But some function has same type.</em>
-    <br>
-    <em class="describe">Specify the target function in metric-mocker with function's name instead of function's type.</em>
+                </div>
+            </div>
 
-    <hr>
-    Expression:
-    <br>
-    <div style="margin-left: 2%;color: midnightblue">
-        <code style="font-size: 150%">
-            {{.Expression}}
-        </code>
-    </div>
-    <em class="describe">The derived function has no param, so the derived function can't specify any param.</em>
-    <hr>
-    <div style="width: 100%">
-        <h4>Keys:</h4>
-        <em class="describe">Keys is the variable of function.</em><br>
+            <hr>
+            <div class="row align-items-start">
+                <div class="col-3">
+                    <h3>Expression:</h3>
+                </div>
+                <div class="col-8">
+                    <h3><code>{{.Expression}}</code></h3>
+                </div>
+            </div>
 
-        {{if .IsDerived}}
-        This function is derived function, from {{.FunctionName}}.
-        {{else if gt (len .Keys) 0 }}
+            <hr>
+            <div class="row align-items-start">
+                <div class="row align-items-start">
+                    <div class="col-3">
+                        <h3>Keys:</h3>
+                    </div>
+                    <div class="col-8">
+                        <em class="describe">Keys is the variable of function.</em>
+                    </div>
+                </div>
+                <div class="row align-items-start">
+                    <div class="col-12">
+                        <div>
+                            {{if .IsDerived}}
+                            This function is derived function, from {{.FunctionName}}.
+                            {{else if gt (len .Keys) 0 }}
 
-        <div style="margin-top: 1%; width: 100%">
-            <table>
-                <tr>
-                    <th class="tableCell" style="font-size: 80%;">Key name</th>
-                    <th class="tableCell" style="font-size: 80%;">Usage</th>
-                    <th class="tableCell" style="font-size: 80%;">Type</th>
-                    <th class="tableCell" style="font-size: 80%;">Default</th>
-                </tr>
-                {{range $keyName, $keyDesc := .Keys}}
-                <tr style="height: 1%">
-                    <td class="tableBellowLines"><code>{{$keyName}}</code></td>
-                    <td class="tableCell tableBellowLines">{{$keyDesc.Mean}}</td>
-                    <td class="tableCell tableBellowLines">{{$keyDesc.Type}}</td>
-                    <td class="tableCell tableBellowLines">{{$keyDesc.Default}}</td>
-                </tr>
-                {{end}}
-            </table>
+                            <div style="margin-top: 1%; width: 100%">
+                                <table class="table table-hover table-striped">
+                                    <tr>
+                                        <th scope="col">Key name</th>
+                                        <th scope="col">Usage</th>
+                                        <th scope="col">Type</th>
+                                        <th scope="col">Default</th>
+                                    </tr>
+                                    {{range $keyName, $keyDesc := .Keys}}
+                                    <tr style="height: 1%">
+                                        <td scope="col"><code>{{$keyName}}</code></td>
+                                        <td>{{$keyDesc.Mean}}</td>
+                                        <td>{{$keyDesc.Type}}</td>
+                                        <td>{{$keyDesc.Default}}</td>
+                                    </tr>
+                                    {{end}}
+                                </table>
+                            </div>
+                        </div>
+                        {{else}}
+                        <div>
+                            This function has no param.
+                        </div>
+                        {{end}}
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+            <div class="row align-items-start">
+                <div class="col-3">
+                    <h3>Usage</h3>
+                </div>
+                <div class="col-12">{{.Doc | unescaped}}</div>
+            </div>
         </div>
-    </div>
-    {{else}}
-    <div>
-        This function has no param.
-    </div>
-    {{end}}
-    <hr>
-    <h4>Function usage:</h4>
-    <div class="functionDoc">
-        {{.Doc | unescaped}}
+        <div class="col-1"></div>
     </div>
 </div>
 </body>
