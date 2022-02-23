@@ -28,6 +28,9 @@ func ConvertMapStringToMapInterface(value map[string]string, keys map[string]Fie
 
 	for k1, v1 := range value {
 		if fieldDescribe, ok := keys[k1]; ok {
+			if len(v1) == 0 {
+				v1 = fieldDescribe.Default
+			}
 			switch fieldDescribe.Type {
 			case reflect.Int64.String():
 				if v, err := strconv.ParseInt(v1, 10, 64); err != nil {

@@ -52,7 +52,7 @@ func GetFunctionValue(ctx *gin.Context) {
 
 	// parse input params
 	var err error
-	params.Params, err = funcs.ConvertMapStringToMapInterface(ctx.QueryMap("Params"), funcs.GetParamFields(funcItem))
+	params.Params, err = funcs.ConvertMapStringToMapInterface(ctx.QueryMap("params"), funcs.GetParamFields(funcItem))
 	if err != nil {
 		_ = ctx.Error(err)
 		return

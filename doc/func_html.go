@@ -6,7 +6,7 @@ import (
 	"mmocker/pkg/funcs"
 )
 
-var templateVar = `
+var templateVar =`
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,20 +19,36 @@ var templateVar = `
             crossorigin="anonymous"></script>
     <script>
         function getFunctionValue() {
+
+            let params = new Map()
+            params["From"] = document.getElementById("x-from").value
+            params["Step"] = document.getElementById("x-step").value
+            params["End"] = document.getElementById("x-end").value
+            //{{range $keyName, $keyDesc := .Keys}}
+            params["params[{{$keyName}}]"] = document.getElementById("{{$keyName}}").value
+            //{{end}}
+
+            let url = '/function/{{.FunctionName}}/value?'
+            for (let key in params) {
+                url += key + "=" + params[key] + "&"
+            }
             let httpRequest = new XMLHttpRequest();//第一步：建立所需的对象
-            httpRequest.open('GET', '/function/{{.FunctionName}}/value', true);//第二步：打开连接  将请求参数写在url中  ps:"./Ptest.php?name=test&nameone=testone"
-            httpRequest.send();//第三步：发送请求  将请求参数写在URL中
             /**
              * 获取数据后的处理程序
              */
             httpRequest.onreadystatechange = function () {
                 if (httpRequest.status === 200) {
-                    let json = httpRequest.responseText;//获取到json字符串，还需解析
-                    console.log(json);
+                    let json = httpRequest.response;//获取到json字符串，还需解析
+                    let data = JSON.parse(json);
+                    document.getElementById("executeExpression").innerText = data.expression
                 } else {
                     console.log(httpRequest.responseText)
                 }
             };
+            httpRequest.open('GET', url, true);//第二步：打开连接  将请求参数写在url中  ps:"./Ptest.php?name=test&nameone=testone"
+            httpRequest.send();//第三步：发送请求  将请求参数写在URL中
+
+
         }
     </script>
 </head>
@@ -50,14 +66,10 @@ var templateVar = `
                 <hr>
                 <br>
                 <div class="row align-items-start">
-                    <div class="col-3">
-                        <h3>Function type:</h3>
-                    </div>
-                    <div class="col-8">
-                        <h3>{{.FunctionType}}</h3>
-                    </div>
+                    <div class="col-3"><h3>Function type:</h3></div>
+                    <div class="col-9"><h3>{{.FunctionType}}</h3></div>
                     <div class="col-3"></div>
-                    <div class="col-8"><em>The function type is the type of function. But some function has same
+                    <div class="col-9"><em>The function type is the type of function. But some function has same
                         type.</em>
                         <em>Specify the target function in metric-mocker with function's name instead of function's
                             type.</em></div>
@@ -72,7 +84,7 @@ var templateVar = `
                 <div class="col-3">
                     <h3>Expression:</h3>
                 </div>
-                <div class="col-8">
+                <div class="col-9">
                     <h3><code>{{.Expression}}</code></h3>
                 </div>
             </div>
@@ -80,9 +92,7 @@ var templateVar = `
             <hr>
             <div class="row align-items-start">
                 <div class="row align-items-start">
-                    <div class="col-3">
-                        <h3>Keys:</h3>
-                    </div>
+                    <div class="col-3"><h3>Keys:</h3></div>
                     <div class="col-8">
                         <em class="describe">Keys is the variable of function.</em>
                     </div>
@@ -124,14 +134,77 @@ var templateVar = `
 
             <hr>
             <div class="row align-items-start">
-                <div class="col-3">
-                    <h3>Usage</h3>
-                </div>
+                <div class="col-3"><h3>Usage</h3></div>
                 <div class="col-12">{{.Doc | unescaped}}</div>
             </div>
             <hr>
+            <div class="row align-items-start">
+                <div class="col-3"><h3>Mocker data:</h3></div>
+                <div class="col-9"></div>
+                <div class="col-12">
+                    <div class="row align-items-start">
+                        <div class="col-3">
+                            <h5>X Range value</h5>
+                        </div>
+                        <div class="col-9"></div>
 
+                        <div class="col-3">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="x-from-label">X-From</span>
+                                <input id="x-from" type="text" class="form-control" aria-label="Sizing example input"
+                                       aria-describedby="inputGroup-sizing-default" value="-10">
+                            </div>
+                        </div>
 
+                        <div class="col-3">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="x-step-label">X-Step</span>
+                                <input id="x-step" type="text" class="form-control" aria-label="Sizing example input"
+                                       aria-describedby="inputGroup-sizing-default" value="1">
+                            </div>
+                        </div>
+
+                        <div class="col-3">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="x-endlabel">X-End</span>
+                                <input id="x-end" type="text" class="form-control" aria-label="Sizing example input"
+                                       aria-describedby="inputGroup-sizing-default" value="10">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="row align-items-start">
+                        <div class="col-3">
+                            <h5>Function params:</h5>
+                        </div>
+                        <div class="col-9"></div>
+                        {{range $keyName, $keyDesc := .Keys}}
+                        <div class="col-3">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="{{$keyName}}-label">{{$keyName}}</span>
+                                <input id="{{$keyName}}" type="text" class="form-control"
+                                       aria-label="Sizing example input"
+                                       aria-describedby="inputGroup-sizing-default" value="{{$keyDesc.Default}}">
+                            </div>
+                        </div>
+                        {{end}}
+                        <div class="col-12"></div>
+                    </div>
+                </div>
+
+                <div class="col-9"></div>
+                <div class="col-3">
+                    <div class="d-grid gap-2">
+                        <button type="button" class="btn btn-outline-primary" onclick="getFunctionValue()">Test</button>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="3"><h5> Execute expression:</h5></div>
+                    <div class="9"><code id="executeExpression"></code></div>
+                </div>
+            </div>
         </div>
         <div class="col-1"></div>
     </div>
