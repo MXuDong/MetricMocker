@@ -18,6 +18,7 @@ var templateVar = `
             integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
             crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script>
         function getFunctionValue() {
 
@@ -38,12 +39,13 @@ var templateVar = `
             for (let key in params) {
                 url += key + "=" + params[key] + "&"
             }
-            let httpRequest = new XMLHttpRequest();
-            let dataSet = []
-            httpRequest.onreadystatechange = function () {
-                if (httpRequest.status === 200) {
-                    let json = httpRequest.response;
-                    let data = JSON.parse(json);
+
+            $.ajax({
+                type: "get",
+                url: url,
+                success: function (response, status, xhr) {
+                    let data=response
+                    let dataSet = []
                     document.getElementById("executeExpression").innerText = data.expression
                     for (let x in data.values) {
                         let v = data.values[x]
@@ -51,7 +53,7 @@ var templateVar = `
                     }
                     let charItem = document.getElementById("dataLine").getContext('2d')
                     let chartStatus = Chart.getChart("dataLine");
-                    if (chartStatus != undefined) {
+                    if (chartStatus !== undefined) {
                         chartStatus.destroy();
                     }
                     if (myChart instanceof Chart) {
@@ -80,13 +82,12 @@ var templateVar = `
                             }
                         }
                     });
-                } else {
-                    document.getElementById("executeExpression").innerText = httpRequest.responseText
-                    return 0
+
+                },
+                error: function (jqXHR) {
+                    document.getElementById("executeExpression").innerText = jqXHR.responseText
                 }
-            };
-            httpRequest.open('GET', url, true);
-            httpRequest.send();
+            })
         }
     </script>
 </head>
