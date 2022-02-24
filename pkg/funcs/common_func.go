@@ -15,7 +15,7 @@ const (
 type StartZeroFunc struct {
 	BaseFunc
 
-	StartTime float64 `key:"start_value" mean:"Where value will start" default:"-1.0"`
+	StartTime float64 `key:"start_value" mean:"Where value will start, and the value can't be change.'" default:"-1.0"`
 }
 
 func (s StartZeroFunc) Doc() string {
@@ -57,7 +57,7 @@ const MetadataUnitFunctionType = "MetadataUnitFunction"
 type MetadataUnitFunction struct {
 }
 
-func (m MetadataUnitFunction) SetType(str TypeStr){
+func (m MetadataUnitFunction) SetType(str TypeStr) {
 	// do nothing
 }
 

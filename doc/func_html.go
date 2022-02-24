@@ -6,7 +6,7 @@ import (
 	"mmocker/pkg/funcs"
 )
 
-var templateVar =`
+var templateVar = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,6 +17,7 @@ var templateVar =`
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
             crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
     <script>
         function getFunctionValue() {
 
@@ -24,11 +25,16 @@ var templateVar =`
             params["From"] = document.getElementById("x-from").value
             params["Step"] = document.getElementById("x-step").value
             params["End"] = document.getElementById("x-end").value
+            //{{if .IsDerived}}
+            //{{else}}
             //{{range $keyName, $keyDesc := .Keys}}
             params["params[{{$keyName}}]"] = document.getElementById("{{$keyName}}").value
             //{{end}}
+            //{{end}}
 
-            let url = '/function/{{.FunctionName}}/value?'
+            let myChart
+
+            let url = '/function/{{.FunctionType}}/value?'
             for (let key in params) {
                 url += key + "=" + params[key] + "&"
             }
@@ -36,19 +42,54 @@ var templateVar =`
             /**
              * 获取数据后的处理程序
              */
+            let dataSet = []
             httpRequest.onreadystatechange = function () {
                 if (httpRequest.status === 200) {
                     let json = httpRequest.response;//获取到json字符串，还需解析
                     let data = JSON.parse(json);
                     document.getElementById("executeExpression").innerText = data.expression
+                    for (let x in data.values) {
+                        let v = data.values[x]
+                        dataSet.push({x: v.input.toString(), y: v.output})
+                    }
+                    let charItem = document.getElementById("dataLine").getContext('2d')
+                    let chartStatus = Chart.getChart("dataLine");
+                    if (chartStatus != undefined) {
+                        chartStatus.destroy();
+                    }
+                    if (myChart instanceof Chart) {
+                        myChart.destroy();
+                    }
+                    myChart = new Chart(charItem, {
+                        type: 'line',
+                        data: {
+                            datasets: [{
+                                data: dataSet,
+                                label: "Function data for {{.FunctionType}}",
+                                borderWidth: 1,
+                                tension: 0,
+                                borderColor: 'rgb(75, 192, 192)'
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            },
+                            parsing: {
+                                xAxisKey: 'x',
+                                yAxisKey: 'y',
+                            }
+                        }
+                    });
                 } else {
-                    console.log(httpRequest.responseText)
+                    document.getElementById("executeExpression").innerText = httpRequest.responseText
+                    return 0
                 }
             };
             httpRequest.open('GET', url, true);//第二步：打开连接  将请求参数写在url中  ps:"./Ptest.php?name=test&nameone=testone"
             httpRequest.send();//第三步：发送请求  将请求参数写在URL中
-
-
         }
     </script>
 </head>
@@ -60,14 +101,14 @@ var templateVar =`
         <div class="col-10">
             <div class="row align-items-start">
                 <div class="col-4">
-                    <h1>{{.FunctionName}}</h1>
+                    <h1>{{.FunctionType}}</h1>
                 </div>
                 <br>
                 <hr>
                 <br>
                 <div class="row align-items-start">
-                    <div class="col-3"><h3>Function type:</h3></div>
-                    <div class="col-9"><h3>{{.FunctionType}}</h3></div>
+                    <div class="col-3"><h3>Function name:</h3></div>
+                    <div class="col-9"><h3>{{.FunctionName}}</h3></div>
                     <div class="col-3"></div>
                     <div class="col-9"><em>The function type is the type of function. But some function has same
                         type.</em>
@@ -180,6 +221,8 @@ var templateVar =`
                             <h5>Function params:</h5>
                         </div>
                         <div class="col-9"></div>
+                        {{if .IsDerived}}
+                        {{else}}
                         {{range $keyName, $keyDesc := .Keys}}
                         <div class="col-3">
                             <div class="input-group mb-3">
@@ -189,6 +232,7 @@ var templateVar =`
                                        aria-describedby="inputGroup-sizing-default" value="{{$keyDesc.Default}}">
                             </div>
                         </div>
+                        {{end}}
                         {{end}}
                         <div class="col-12"></div>
                     </div>
@@ -203,6 +247,9 @@ var templateVar =`
                 <div class="col-12">
                     <div class="3"><h5> Execute expression:</h5></div>
                     <div class="9"><code id="executeExpression"></code></div>
+                </div>
+                <div class="col-12">
+                    <canvas id="dataLine"></canvas>
                 </div>
             </div>
         </div>
