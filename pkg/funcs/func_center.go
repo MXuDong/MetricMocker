@@ -33,6 +33,8 @@ var FuncMap = map[TypeStr]FuncInitiator{
 	TimeMinutesFunctionType:       TimeMinutesFunctionInitiator,
 	TimeSecondsInHourFunctionType: TimeSecondsInHourFunctionInitiator,
 	TimeHoursFunctionType:         TimeHoursFunctionInitiator,
+
+	RandomFunctionType: RandomFunctionInitiator,
 }
 
 func Function(param FunctionParams) BaseFuncInterface {

@@ -21,6 +21,13 @@ type Application struct {
 	NodeId             string              `yaml:"nodeId"` // Bind with the environment. If empty, set local directly.
 	ObjectMockerConfig *ObjectMockerConfig `yaml:"objectMockerConfig"`
 	Port               string              `yaml:"port"`
+	SourceLinkConfig   SourceLinkConfig    `yaml:"sourceLinkConfig"`
+}
+
+type SourceLinkConfig struct {
+	JQuerySource    string `yaml:"JQuerySource"`
+	BootstrapSource string `yaml:"bootstrapSource"`
+	ChartJSSource   string `yaml:"chartJSSource"`
 }
 
 type ObjectMockerConfig struct {
