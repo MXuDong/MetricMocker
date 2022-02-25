@@ -65,8 +65,8 @@ If input value is time, the return value is the minute value in one Hour.
 		return &ModularFunction{
 			BaseFunc: BaseFunc{
 				IsDerivedVar: &TrueP,
-				DocValue: `TimeMinutesFunction always return the value in 0-59, and set offset to zero(offsetX, offsetY).
-If input value is time, the return value is the minute value in one Hour.
+				DocValue: `TimeMinutesFunction always return the value in 0-24, and set offset to zero(offsetX, offsetY).
+If input value is time, the return value is the hour in one day.
 `,
 				keyFunctions: map[string]BaseFuncInterface{
 					UnknownKey: &FloatFloorFunction{

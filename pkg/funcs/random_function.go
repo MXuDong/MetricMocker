@@ -9,7 +9,9 @@ type RandomFunction struct {
 	BaseFunc
 
 	BaseExpression string
-	Seed           int64 `key:"seed" default:"0" mean:"The random seed"`
+	Seed           int64   `key:"seed" default:"0" mean:"The random seed."`
+	Range          int64   `key:"range" default:"1" mean:"The range for random value."`
+	OffsetY        float64 `key:"offsetY" default:"0" mean:"The offset of y."`
 
 	randItem *rand.Rand
 }
@@ -17,7 +19,7 @@ type RandomFunction struct {
 func (r *RandomFunction) Expression() string {
 	if len(r.BaseExpression) == 0 {
 		xExpression := r.KeyExpressionMap()[UnknownKey]
-		r.BaseExpression = fmt.Sprintf("Random(%s)", xExpression)
+		r.BaseExpression = fmt.Sprintf("Random(%s)%%%d%s", xExpression, r.Range, ExpressionOfValueWithSymbol(r.OffsetY))
 	}
 
 	return r.BaseExpression
@@ -29,7 +31,16 @@ func (r *RandomFunction) Init() {
 }
 
 func (r RandomFunction) Call(float642 float64) (float64, error) {
-	return float64(r.randItem.Int()) + r.randItem.Float64(), nil
+	if r.Range == 0 {
+		return 0 + r.OffsetY, nil
+	}
+	if r.Range < 0 {
+		return 0, ShouldBiggerThanZero.Param("range")
+	}
+	value := float64(r.randItem.Int63n(r.Range))
+	value += r.randItem.Float64()
+	value += r.OffsetY
+	return value, nil
 }
 
 const (

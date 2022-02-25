@@ -75,7 +75,7 @@ func GetFunctionValue(ctx *gin.Context) {
 	for inputValue := params.From; inputValue <= params.End; inputValue += params.Step {
 		outputValue, err := funcItem.Call(inputValue)
 		if err != nil {
-			_ = ctx.Error(err)
+			ctx.String(http.StatusBadRequest, err.Error())
 			return
 		}
 

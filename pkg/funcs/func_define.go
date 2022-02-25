@@ -384,4 +384,5 @@ func (ce *CalculateError) Error() string {
 var (
 	ZeroValueError = CalculateError{Format: "'%s' can't be zero."}
 	NanValueError  = CalculateError{Format: "'%s' is nan value."}
+	ShouldBiggerThanZero = CalculateError{Format: "'%s' should greater than zero."}
 )
