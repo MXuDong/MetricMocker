@@ -309,6 +309,15 @@ func GetFunctionName(funcInterface BaseFuncInterface) string {
 	return typ.Name()
 }
 
+func GetFunctionUnknownKeys(funcInterface BaseFuncInterface) []string {
+	keys := funcInterface.KeyMap()
+	var keyArray []string
+	for keyItem, _ := range keys {
+		keyArray = append(keyArray, keyItem)
+	}
+	return keyArray
+}
+
 func GetExpression(funcInterface BaseFuncInterface) string {
 	if funcInterface == nil {
 		return ""
@@ -382,7 +391,7 @@ func (ce *CalculateError) Error() string {
 }
 
 var (
-	ZeroValueError = CalculateError{Format: "'%s' can't be zero."}
-	NanValueError  = CalculateError{Format: "'%s' is nan value."}
+	ZeroValueError       = CalculateError{Format: "'%s' can't be zero."}
+	NanValueError        = CalculateError{Format: "'%s' is nan value."}
 	ShouldBiggerThanZero = CalculateError{Format: "'%s' should greater than zero."}
 )

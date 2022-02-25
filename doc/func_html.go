@@ -44,7 +44,7 @@ var templateVar = `
                 type: "get",
                 url: url,
                 success: function (response, status, xhr) {
-                    let data=response
+                    let data = response
                     let dataSet = []
                     document.getElementById("executeExpression").innerText = data.expression
                     for (let x in data.values) {
@@ -168,6 +168,24 @@ var templateVar = `
                         </div>
                         {{end}}
                     </div>
+                </div>
+            </div>
+            
+            <hr>
+            <div class="row align-items-start">
+                <div class="row align-items-start">
+                    <div class="col-3"><h3>Unknown keys:</h3></div>
+                    <div class="col-8">
+                        <em class="describe">unknown keys can be replaced to some functions.</em>
+                    </div>
+                </div>
+                <div>
+
+                    <ul>
+                        {{range $keys := .UnknownKeys}}
+                        <li><h5>{{$keys}}</h5></li>
+                        {{end}}
+                    </ul>
                 </div>
             </div>
 
