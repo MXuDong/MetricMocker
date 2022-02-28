@@ -8,11 +8,11 @@ import (
 
 func ExpressionOfValueWithSymbol(value float64) string {
 	if value > 0 {
-		return "+" + fmt.Sprintf("%f", value)
+		return fmt.Sprintf("+%f", value)
 	} else if value == 0 {
 		return ""
 	} else {
-		return "-" + fmt.Sprintf("%f", value)
+		return fmt.Sprintf("-%f", value)
 	}
 }
 
