@@ -5,16 +5,6 @@ Processors:
     FunctionParamsList:
       - Type: TimeMinutesFunction
         Name: Test1
-#      - Type: BaseDivisionFunction
-#        Name: Test2
-#        Params:
-#          divisor: 2.0
-#        KeyFunctions:
-#          x:
-#            type: StartZeroFunc
-#            name: Start-Zero-func
-#      - Type: TimeSecondsFunction
-#        Name: test
     CronStr: "@every 1s"
     Clients:
       - debug_client
@@ -23,6 +13,7 @@ Clients:
   - name: debug_client
     type: StdoutClient
     params:
+      timeInterval: "@every 1m"
 #      STDOUT_FILE: STDOUT_FILE # If you want to disable the debug_client, delete this line.
 #  - name: influx-test-client
 #    type: InfluxDBV1
