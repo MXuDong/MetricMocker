@@ -6,6 +6,7 @@ import (
 	"github.com/robfig/cron/v3"
 	"github.com/spf13/viper"
 	"mmocker/conf"
+	"mmocker/instances"
 	"mmocker/internal/web"
 	"mmocker/om"
 	"mmocker/pkg/clients"
@@ -29,21 +30,13 @@ func main() {
 
 		// init cron job
 		cronInstance := cron.New()
-		_, err := cronInstance.AddFunc(conf.ApplicationConfig.ObjectMockerConfig.SyncInterval, func() {
-			log.Logger.Infof("Sync from object-mocker by interval: %s", conf.ApplicationConfig.ObjectMockerConfig.SyncInterval)
-			processors, err := om.ListProcessor()
-			if err != nil {
-				log.Logger.Errorf("%v", err)
-			}
-
-			for _, procItem := range processors {
-				proc.AddProcessors(procItem)
-			}
+		_, err := instances.GlobalCron.AddFunc(conf.ApplicationConfig.ObjectMockerConfig.SyncInterval, func() {
+			functionSync()
 		})
-		cronInstance.Start()
 		if err != nil {
 			log.Logger.Error("%v", err)
 		}
+		cronInstance.Start()
 	}
 	for _, item := range config.Clients {
 		clients.Client(item.Name, item.Type, item.Params)
@@ -54,11 +47,11 @@ func main() {
 			item.Holder = conf.ApplicationConfig.NodeId
 		}
 		if conf.ApplicationConfig.ObjectMockerConfig.Enable {
-			if _, err := om.RegisterProcessor(item); err != nil {
+			if _, err := om.RegisterProcessor(*item); err != nil {
 				log.Logger.Error("%v", err)
 			}
 		}
-		proc.AddProcessors(&item)
+		proc.AddProcessors(item)
 	}
 
 	web.Run()
@@ -103,4 +96,18 @@ func InitConf() *conf.Configs {
 	conf.ApplicationConfig = c.Application
 
 	return c
+}
+
+func functionSync() {
+	log.Logger.Infof("Sync from object-mocker by interval: %s", conf.ApplicationConfig.ObjectMockerConfig.SyncInterval)
+	processors, err := om.ListProcessor()
+	if err != nil {
+		log.Logger.Errorf("%v", err)
+	}
+	var procNames []string
+	proc.AddProcessors(processors...)
+	for _, procItem := range processors {
+		procNames = append(procNames, procItem.Name)
+	}
+	proc.CutNotExistProcessors(procNames...)
 }

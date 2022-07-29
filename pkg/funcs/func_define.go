@@ -57,6 +57,9 @@ type BaseFuncInterface interface {
 	// So all the derived function should init param by self, suck like : use init func to init param, or init param when
 	// register to func-center.
 	IsDerived() bool
+
+	// Destroy will destroy the function, the function disable. And wait gc.
+	Destroy()
 }
 
 type BaseFunc struct {
@@ -65,6 +68,15 @@ type BaseFunc struct {
 	IsDerivedVar *bool
 	DocValue     string
 	typeValue    TypeStr
+}
+
+// Destroy will destroy the function, the function disable. And wait gc.
+func (bf *BaseFunc) Destroy() {
+	for _, funcItem := range bf.keyFunctions {
+		funcItem.Destroy()
+	}
+
+	bf.keyFunctions = nil
 }
 
 func (bf *BaseFunc) SetType(str TypeStr) {

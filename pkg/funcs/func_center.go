@@ -15,6 +15,7 @@ var (
 	FalseP = false
 )
 
+// FuncMap save all functions, all function register here by hand.
 var FuncMap = map[TypeStr]FuncInitiator{
 	// base function
 	MetadataUnitFunctionType: func() BaseFuncInterface { return &MetadataUnitFunction{} },
@@ -35,6 +36,8 @@ var FuncMap = map[TypeStr]FuncInitiator{
 	TimeHoursFunctionType:         TimeHoursFunctionInitiator,
 
 	RandomFunctionType: RandomFunctionInitiator,
+
+	SinFunctionType: SinFunctionInitiator,
 }
 
 func Function(param FunctionParams) BaseFuncInterface {

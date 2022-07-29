@@ -7,7 +7,7 @@ var ApplicationConfig *Application
 type Configs struct {
 	Clients     []Client         `yaml:"Clients" json:"clients"`
 	Application *Application     `yaml:"Application"`
-	Processors  []proc.Processor `yaml:"Processors"`
+	Processors  []*proc.Processor `yaml:"Processors"`
 }
 
 type Client struct {

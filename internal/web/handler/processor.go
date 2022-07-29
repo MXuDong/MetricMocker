@@ -7,7 +7,7 @@ import (
 )
 
 func ListProcessor(ctx *gin.Context) {
-	processors := proc.Processors
+	processors, _ := proc.ListProcessors()
 
 	ctx.JSONP(http.StatusOK, processors)
 }

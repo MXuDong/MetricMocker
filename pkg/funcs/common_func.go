@@ -57,6 +57,10 @@ const MetadataUnitFunctionType = "MetadataUnitFunction"
 type MetadataUnitFunction struct {
 }
 
+func (m MetadataUnitFunction)Destroy(){
+	// do nothing
+}
+
 func (m MetadataUnitFunction) SetType(str TypeStr) {
 	// do nothing
 }

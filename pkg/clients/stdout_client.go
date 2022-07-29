@@ -2,7 +2,7 @@ package clients
 
 import (
 	"fmt"
-	"github.com/robfig/cron/v3"
+	"mmocker/instances"
 	"mmocker/pkg/common"
 	"sync"
 )
@@ -14,16 +14,13 @@ type StdoutClient struct {
 }
 
 func (s *StdoutClient) Init(param map[string]interface{}) {
-	cronInstance := cron.New()
-	cronInstance.Start()
-
 	var timeInterval string
 	var ok bool
-	if timeInterval, ok = param["timeInterval"].(string);!ok {
+	if timeInterval, ok = param["timeInterval"].(string); !ok {
 		timeInterval = "@every 60s"
 	}
 
-	eId, err := cronInstance.AddFunc(timeInterval, func() {
+	eId, err := instances.GlobalCron.AddFunc(timeInterval, func() {
 		if s.keys != nil {
 			s.rwLock.RLock()
 			defer s.rwLock.RUnlock()

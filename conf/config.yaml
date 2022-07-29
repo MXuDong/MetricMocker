@@ -1,26 +1,49 @@
 Processors:
-  - Name: test-p
+  - Name: 定值变化函数发生器
     Tags:
-      v1: test1
+      ResourceId: func_1
+      Region: no-region
+      AccountId: 1
     FunctionParamsList:
-      - Type: TimeMinutesFunction
-        Name: Test1
+      - Type: SinFunction
+        Name: "Sin function by second"
+        Params:
+          # 接近天级别的周期，但是不准确，有一定偏差
+          # 2*PI/(24*60*60)
+          Slopex: 0.000072685185185
+          Slope: 100
+#      - Type: TimeMinutesFunction
+#        Name: "Minute function"
+#      - Type: TimeHoursFunction
+#        Name: "Hour function"
+#      - Type: TimeSecondsFunction
+#        Name: "Seconds function"
+#      - Type: BaseLinearFunction
+#        Name: "Linear function"
+#      - Type: StartZeroFunc
+#        Name: "Start zero func"
     CronStr: "@every 1s"
     Clients:
       - debug_client
 #      - influx-test-client
+  - Name: 空数据函数发生器
+    Tags:
+      ResourceId: func_2
+      Region: no-region
+      AccountId: 1
+
 Clients:
   - name: debug_client
     type: StdoutClient
     params:
-      timeInterval: "@every 1m"
-#      STDOUT_FILE: STDOUT_FILE # If you want to disable the debug_client, delete this line.
+      timeInterval: "@every 1s"
+  #      STDOUT_FILE: STDOUT_FILE # If you want to disable the debug_client, delete this line.
 #  - name: influx-test-client
 #    type: InfluxDBV1
 #    params:
-#      ServerURL: "http://127.0.0.1:8086"
-#      Database: test
-#      Table: test2
+#      ServerURL: ""
+#      Database: cloud_monitor_test_metrics
+#      Table: datas
 Application:
   ticker: 5
   port: ":3001"
@@ -28,4 +51,4 @@ Application:
   objectMockerConfig:
     enable: false
     host: "http://127.0.0.1:3000"
-    syncInterval: "@every 5s"
+    syncInterval: "@every 60s"

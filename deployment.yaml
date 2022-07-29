@@ -1,10 +1,10 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: mockers
-  labels:
-    istio-injection: enabled
----
+#apiVersion: v1
+#kind: Namespace
+#metadata:
+#  name: mockers
+#  labels:
+#    istio-injection: enabled
+#---
 apiVersion: v1
 kind: Service
 metadata:
@@ -14,8 +14,9 @@ metadata:
     app: metric-mocker
     version: v1beta
 spec:
+  type: NodePort
   ports:
-    - port: 8080
+    - port: 3001
       name: http-prom-port
   selector:
     app: metric-mocker
@@ -44,7 +45,79 @@ spec:
     spec:
       containers:
         - name: metric-mocker
-          image: mxudong/metric-mocker:v1.1.0
+          imagePullPolicy:
+          image: 10.174.245.66/mockers/metric-mocker:latest
+          env:
+            - name: CONF_PATH
+              value: "/config/config.yaml"
           ports:
-            - containerPort: 8080
+            - containerPort: 3001
               name: http-prom-port
+          volumeMounts:
+            - mountPath: /config/
+              name: config
+      volumes:
+        - name: config
+          configMap:
+            name: metric-mocker-cm
+            items:
+              - key: config
+                path: config.yaml
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: metric-mocker-cm
+  namespace: mockers
+  labels:
+    app: metric-mocker
+    version: v1beta
+data:
+  config: |
+    Processors:
+      - Name: 定值变化函数发生器
+        Tags:
+          ResourceId: func_1
+          Region: no-region
+          AccountId: 1
+        FunctionParamsList:
+          - Type: TimeMinutesFunction
+            Name: "Minute function"
+          - Type: TimeHoursFunction
+            Name: "Hour function"
+          - Type: TimeSecondsFunction
+            Name: "Seconds function"
+          - Type: BaseLinearFunction
+            Name: "Linear function"
+          - Type: StartZeroFunc
+            Name: "Start zero func"
+        CronStr: "@every 30s"
+        Clients:
+          #      - debug_client
+          - influx-test-client
+      - Name: 空数据函数发生器
+        Tags:
+          ResourceId: func_2
+          Region: no-region
+          AccountId: 1
+
+    Clients:
+      - name: debug_client
+        type: StdoutClient
+        params:
+          timeInterval: "@every 1s"
+      #      STDOUT_FILE: STDOUT_FILE # If you want to disable the debug_client, delete this line.
+      - name: influx-test-client
+        type: InfluxDBV1
+        params:
+          ServerURL: "http://volc-influxdb-boe.byted.org:80"
+          Database: cloud_monitor_test_metrics
+          Table: datas
+    Application:
+      ticker: 5
+      port: ":3001"
+      nodeId: local
+      objectMockerConfig:
+        enable: false
+        host: "http://127.0.0.1:3000"
+        syncInterval: "@every 60s"

@@ -3,6 +3,7 @@ package proc
 import (
 	"fmt"
 	"github.com/robfig/cron/v3"
+	"mmocker/instances"
 	"mmocker/pkg/clients"
 	"mmocker/pkg/common"
 	"mmocker/pkg/funcs"
@@ -27,8 +28,13 @@ type Processor struct {
 
 	Clients []string `yaml:"Clients" json:"Clients"`
 
+	FunctionCount int `yaml:"FunctionCount" json:"FunctionCount"`
+	ClientCount   int `yaml:"ClientCount" json:"ClientCount"`
+
 	ClientInstances []clients.BaseClientInterface `json:"-"` // load by processor
 	CronStr         string                        `yaml:"CronStr" json:"CronStr"`
+	cronItem        *cron.Cron
+	jobId           cron.EntryID
 }
 
 func (p *Processor) Load() {
@@ -72,18 +78,43 @@ func (p *Processor) Load() {
 		}
 	}
 
-	cItem := cron.New()
-	cItem.Start()
 	cronStr := p.CronStr
 	if len(cronStr) == 0 {
 		cronStr = "@every 5s"
 	}
-	cItem.AddFunc(cronStr, func() {
-		res := p.Values()
-		for _, clientItem := range p.ClientInstances {
-			clientItem.Push(p.Name, res)
-		}
-	})
+
+	fmt.Printf("%p", p)
+	fmt.Println(p.ScheduleFunc)
+
+	p.jobId, _ = instances.GlobalCron.AddFunc(cronStr, p.ScheduleFunc)
+}
+
+func (p *Processor) ScheduleFunc() {
+	res := p.Values()
+	for _, clientItem := range p.ClientInstances {
+		clientItem.Push(p.Name, res)
+	}
+}
+
+// Unload will stop the job and remove all values.
+func (p *Processor) Unload() {
+	// stop the job, and point to nil
+	p.cronItem = nil
+	instances.GlobalCron.Remove(p.jobId)
+
+	// remove client
+	p.ClientInstances = nil
+	p.Clients = nil
+
+	// remove function
+	for _, functionItem := range p.Functions {
+		functionItem.Destroy()
+	}
+	p.Functions = nil
+	p.FunctionTags = nil
+	p.FunctionParamsList = nil
+
+	// complete unload
 }
 
 // Values will call all function. And return with processor and function param tag.

@@ -2,20 +2,24 @@ module mmocker
 
 go 1.17
 
-require github.com/spf13/viper v1.9.0
+require (
+	github.com/application-mocker/object-client v0.0.0-20211228092541-4d1ae182b1cf
+	github.com/gin-gonic/gin v1.7.7
+	github.com/influxdata/influxdb-client-go/v2 v2.7.0
+	github.com/robfig/cron/v3 v3.0.1
+	github.com/sirupsen/logrus v1.8.1
+	github.com/spf13/viper v1.9.0
+)
 
 require (
-	github.com/application-mocker/object-client v0.0.0-20211228092541-4d1ae182b1cf // indirect
 	github.com/deepmap/oapi-codegen v1.8.2 // indirect
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
-	github.com/gin-gonic/gin v1.7.7 // indirect
 	github.com/go-playground/locales v0.13.0 // indirect
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-playground/validator/v10 v10.4.1 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
-	github.com/influxdata/influxdb-client-go/v2 v2.7.0 // indirect
 	github.com/influxdata/line-protocol v0.0.0-20200327222509-2487e7298839 // indirect
 	github.com/json-iterator/go v1.1.11 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect
@@ -26,8 +30,6 @@ require (
 	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/pelletier/go-toml v1.9.4 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/robfig/cron/v3 v3.0.1 // indirect
-	github.com/sirupsen/logrus v1.8.1 // indirect
 	github.com/spf13/afero v1.6.0 // indirect
 	github.com/spf13/cast v1.4.1 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
