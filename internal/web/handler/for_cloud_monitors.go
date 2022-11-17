@@ -12,18 +12,20 @@ import (
 //--------------------------------------------------
 // custom define
 
+type ErrorRes struct {
+	Code    string `json:"Code"`
+	Message string `json:"Message"`
+}
+
 // CommonResult define the result by TOP rule.
 type CommonResult struct {
 	ResponseMetadata struct {
-		RequestId string `json:"RequestId"`
-		Action    string `json:"Action"`
-		Version   string `json:"Version"`
-		Service   string `json:"Service"`
-		Region    string `json:"Region"`
-		Error     struct {
-			Code    string `json:"Code"`
-			Message string `json:"Message"`
-		} `json:"Error"`
+		RequestId string    `json:"RequestId"`
+		Action    string    `json:"Action"`
+		Version   string    `json:"Version"`
+		Service   string    `json:"Service"`
+		Region    string    `json:"Region"`
+		Error     *ErrorRes `json:"Error,omitempty"`
 	} `json:"ResponseMetadata"`
 	Result struct {
 		Data  interface{} `json:"Data"`  // Data in this program is an array.
@@ -74,6 +76,7 @@ func ListResourceForCloudMonitor(ctx *gin.Context) {
 
 	body, err := ioutil.ReadAll(ctx.Request.Body)
 	if err != nil {
+		res.ResponseMetadata.Error = &ErrorRes{}
 		res.ResponseMetadata.Error.Message = err.Error()
 		res.ResponseMetadata.Error.Code = fmt.Sprintf("%d", http.StatusBadRequest)
 		ctx.JSON(http.StatusBadRequest, res)
@@ -86,6 +89,7 @@ func ListResourceForCloudMonitor(ctx *gin.Context) {
 	}
 
 	if err := json.Unmarshal(body, &reqParam); err != nil {
+		res.ResponseMetadata.Error = &ErrorRes{}
 		res.ResponseMetadata.Error.Message = err.Error()
 		res.ResponseMetadata.Error.Code = fmt.Sprintf("%d", http.StatusBadRequest)
 		ctx.JSON(http.StatusBadRequest, res)

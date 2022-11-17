@@ -26,11 +26,11 @@ Processors:
     Clients:
       - debug_client
 #      - influx-test-client
-  - Name: 空数据函数发生器
-    Tags:
-      ResourceId: func_2
-      Region: no-region
-      AccountId: 1
+#  - Name: 空数据函数发生器
+#    Tags:
+#      ResourceId: func_2
+#      Region: no-region
+#      AccountId: 1
 
 Clients:
   - name: debug_client

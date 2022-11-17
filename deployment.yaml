@@ -45,7 +45,7 @@ spec:
     spec:
       containers:
         - name: metric-mocker
-          imagePullPolicy:
+          imagePullPolicy: Always
           image: 10.174.245.66/mockers/metric-mocker:latest
           env:
             - name: CONF_PATH
